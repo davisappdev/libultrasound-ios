@@ -24,6 +24,8 @@
 		36B750FB161693A800A6ED3B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B750D3161693A700A6ED3B /* Foundation.framework */; };
 		36B75103161693A800A6ED3B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 36B75101161693A800A6ED3B /* InfoPlist.strings */; };
 		36B75106161693A800A6ED3B /* UltrasoundTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B75105161693A800A6ED3B /* UltrasoundTests.m */; };
+		36B75111161693E900A6ED3B /* AudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B75110161693E900A6ED3B /* AudioManager.m */; };
+		36B751131616941300A6ED3B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B751121616941300A6ED3B /* AudioToolbox.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +62,9 @@
 		36B75102161693A800A6ED3B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		36B75104161693A800A6ED3B /* UltrasoundTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UltrasoundTests.h; sourceTree = "<group>"; };
 		36B75105161693A800A6ED3B /* UltrasoundTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UltrasoundTests.m; sourceTree = "<group>"; };
+		36B7510F161693E900A6ED3B /* AudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioManager.h; sourceTree = "<group>"; };
+		36B75110161693E900A6ED3B /* AudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioManager.m; sourceTree = "<group>"; };
+		36B751121616941300A6ED3B /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36B751131616941300A6ED3B /* AudioToolbox.framework in Frameworks */,
 				36B750D2161693A700A6ED3B /* UIKit.framework in Frameworks */,
 				36B750D4161693A700A6ED3B /* Foundation.framework in Frameworks */,
 				36B750D6161693A700A6ED3B /* CoreGraphics.framework in Frameworks */,
@@ -108,6 +114,7 @@
 		36B750D0161693A700A6ED3B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				36B751121616941300A6ED3B /* AudioToolbox.framework */,
 				36B750D1161693A700A6ED3B /* UIKit.framework */,
 				36B750D3161693A700A6ED3B /* Foundation.framework */,
 				36B750D5161693A700A6ED3B /* CoreGraphics.framework */,
@@ -126,6 +133,8 @@
 				36B750EF161693A800A6ED3B /* ViewController.h */,
 				36B750F0161693A800A6ED3B /* ViewController.m */,
 				36B750D8161693A700A6ED3B /* Supporting Files */,
+				36B7510F161693E900A6ED3B /* AudioManager.h */,
+				36B75110161693E900A6ED3B /* AudioManager.m */,
 			);
 			path = Ultrasound;
 			sourceTree = "<group>";
@@ -277,6 +286,7 @@
 				36B750DE161693A700A6ED3B /* main.m in Sources */,
 				36B750E2161693A800A6ED3B /* AppDelegate.m in Sources */,
 				36B750F1161693A800A6ED3B /* ViewController.m in Sources */,
+				36B75111161693E900A6ED3B /* AudioManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
