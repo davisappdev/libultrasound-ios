@@ -7,8 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AudioManager.h"
 
-@interface ViewController : UIViewController <AudioManagerDelegate>
+@interface ViewController : UIViewController
 
 @end

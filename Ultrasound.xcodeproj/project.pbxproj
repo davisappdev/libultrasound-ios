@@ -7,6 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		361B19FA165AF09A00BC19CB /* FFTBufferManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 361B19F9165AF09A00BC19CB /* FFTBufferManager.cpp */; };
+		361B19FB165AF09A00BC19CB /* FFTBufferManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 361B19F9165AF09A00BC19CB /* FFTBufferManager.cpp */; };
+		361B1A01165AF15100BC19CB /* rad2fft.c in Sources */ = {isa = PBXBuildFile; fileRef = 361B19FE165AF15100BC19CB /* rad2fft.c */; };
+		361B1A02165AF15100BC19CB /* rad2fft.c in Sources */ = {isa = PBXBuildFile; fileRef = 361B19FE165AF15100BC19CB /* rad2fft.c */; };
+		361B1A03165AF15100BC19CB /* SpectrumAnalysis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 361B1A00165AF15100BC19CB /* SpectrumAnalysis.cpp */; };
+		361B1A04165AF15100BC19CB /* SpectrumAnalysis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 361B1A00165AF15100BC19CB /* SpectrumAnalysis.cpp */; };
+		3692BEA81657414F002A8605 /* audio_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3692BEA71657414F002A8605 /* audio_helper.cpp */; };
+		3692BEA91657414F002A8605 /* audio_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3692BEA71657414F002A8605 /* audio_helper.cpp */; };
+		3692BEB1165741E9002A8605 /* CADebugMacros.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3692BEAB165741E9002A8605 /* CADebugMacros.cpp */; };
+		3692BEB2165741E9002A8605 /* CADebugMacros.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3692BEAB165741E9002A8605 /* CADebugMacros.cpp */; };
+		3692BEB3165741E9002A8605 /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3692BEAD165741E9002A8605 /* CAXException.cpp */; };
+		3692BEB4165741E9002A8605 /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3692BEAD165741E9002A8605 /* CAXException.cpp */; };
+		3692BEB5165741E9002A8605 /* CAStreamBasicDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3692BEB0165741E9002A8605 /* CAStreamBasicDescription.cpp */; };
+		3692BEB6165741E9002A8605 /* CAStreamBasicDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3692BEB0165741E9002A8605 /* CAStreamBasicDescription.cpp */; };
 		36B750D2161693A700A6ED3B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B750D1161693A700A6ED3B /* UIKit.framework */; };
 		36B750D4161693A700A6ED3B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B750D3161693A700A6ED3B /* Foundation.framework */; };
 		36B750D6161693A700A6ED3B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B750D5161693A700A6ED3B /* CoreGraphics.framework */; };
@@ -24,8 +38,9 @@
 		36B750FB161693A800A6ED3B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B750D3161693A700A6ED3B /* Foundation.framework */; };
 		36B75103161693A800A6ED3B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 36B75101161693A800A6ED3B /* InfoPlist.strings */; };
 		36B75106161693A800A6ED3B /* UltrasoundTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B75105161693A800A6ED3B /* UltrasoundTests.m */; };
-		36B75111161693E900A6ED3B /* AudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B75110161693E900A6ED3B /* AudioManager.m */; };
+		36B75111161693E900A6ED3B /* AudioManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 36B75110161693E900A6ED3B /* AudioManager.mm */; };
 		36B751131616941300A6ED3B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B751121616941300A6ED3B /* AudioToolbox.framework */; };
+		36C3017D1634966F00D44AE8 /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 36C3017C1634966F00D44AE8 /* AudioPlayer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +54,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		361B19F8165AF09A00BC19CB /* FFTBufferManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTBufferManager.h; sourceTree = "<group>"; };
+		361B19F9165AF09A00BC19CB /* FFTBufferManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FFTBufferManager.cpp; sourceTree = "<group>"; };
+		361B19FD165AF15100BC19CB /* rad2fft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rad2fft.h; sourceTree = "<group>"; };
+		361B19FE165AF15100BC19CB /* rad2fft.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rad2fft.c; sourceTree = "<group>"; };
+		361B19FF165AF15100BC19CB /* SpectrumAnalysis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpectrumAnalysis.h; sourceTree = "<group>"; };
+		361B1A00165AF15100BC19CB /* SpectrumAnalysis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpectrumAnalysis.cpp; sourceTree = "<group>"; };
+		3692BE9F165740B2002A8605 /* audio_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_helper.h; sourceTree = "<group>"; };
+		3692BEA71657414F002A8605 /* audio_helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = audio_helper.cpp; sourceTree = "<group>"; };
+		3692BEAA165741E9002A8605 /* CADebugMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CADebugMacros.h; sourceTree = "<group>"; };
+		3692BEAB165741E9002A8605 /* CADebugMacros.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CADebugMacros.cpp; sourceTree = "<group>"; };
+		3692BEAC165741E9002A8605 /* CAXException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAXException.h; sourceTree = "<group>"; };
+		3692BEAD165741E9002A8605 /* CAXException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAXException.cpp; sourceTree = "<group>"; };
+		3692BEAE165741E9002A8605 /* CAMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAMath.h; sourceTree = "<group>"; };
+		3692BEAF165741E9002A8605 /* CAStreamBasicDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAStreamBasicDescription.h; sourceTree = "<group>"; };
+		3692BEB0165741E9002A8605 /* CAStreamBasicDescription.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAStreamBasicDescription.cpp; sourceTree = "<group>"; };
 		36B750CD161693A700A6ED3B /* Ultrasound.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ultrasound.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36B750D1161693A700A6ED3B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		36B750D3161693A700A6ED3B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -63,8 +93,10 @@
 		36B75104161693A800A6ED3B /* UltrasoundTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UltrasoundTests.h; sourceTree = "<group>"; };
 		36B75105161693A800A6ED3B /* UltrasoundTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UltrasoundTests.m; sourceTree = "<group>"; };
 		36B7510F161693E900A6ED3B /* AudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioManager.h; sourceTree = "<group>"; };
-		36B75110161693E900A6ED3B /* AudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioManager.m; sourceTree = "<group>"; };
+		36B75110161693E900A6ED3B /* AudioManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioManager.mm; sourceTree = "<group>"; };
 		36B751121616941300A6ED3B /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		36C3017B1634966F00D44AE8 /* AudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioPlayer.h; sourceTree = "<group>"; };
+		36C3017C1634966F00D44AE8 /* AudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioPlayer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +124,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		361B1A05165AF16200BC19CB /* FFT */ = {
+			isa = PBXGroup;
+			children = (
+				361B19F8165AF09A00BC19CB /* FFTBufferManager.h */,
+				361B19F9165AF09A00BC19CB /* FFTBufferManager.cpp */,
+				361B19FD165AF15100BC19CB /* rad2fft.h */,
+				361B19FE165AF15100BC19CB /* rad2fft.c */,
+				361B19FF165AF15100BC19CB /* SpectrumAnalysis.h */,
+				361B1A00165AF15100BC19CB /* SpectrumAnalysis.cpp */,
+			);
+			name = FFT;
+			sourceTree = "<group>";
+		};
+		3692BEB7165741F3002A8605 /* iPublicUtility */ = {
+			isa = PBXGroup;
+			children = (
+				3692BEAA165741E9002A8605 /* CADebugMacros.h */,
+				3692BEAB165741E9002A8605 /* CADebugMacros.cpp */,
+				3692BEAC165741E9002A8605 /* CAXException.h */,
+				3692BEAD165741E9002A8605 /* CAXException.cpp */,
+				3692BEAE165741E9002A8605 /* CAMath.h */,
+				3692BEAF165741E9002A8605 /* CAStreamBasicDescription.h */,
+				3692BEB0165741E9002A8605 /* CAStreamBasicDescription.cpp */,
+			);
+			name = iPublicUtility;
+			sourceTree = "<group>";
+		};
 		36B750C2161693A700A6ED3B = {
 			isa = PBXGroup;
 			children = (
@@ -126,15 +185,19 @@
 		36B750D7161693A700A6ED3B /* Ultrasound */ = {
 			isa = PBXGroup;
 			children = (
-				36B750E0161693A700A6ED3B /* AppDelegate.h */,
-				36B750E1161693A800A6ED3B /* AppDelegate.m */,
 				36B750E9161693A800A6ED3B /* MainStoryboard_iPhone.storyboard */,
 				36B750EC161693A800A6ED3B /* MainStoryboard_iPad.storyboard */,
 				36B750EF161693A800A6ED3B /* ViewController.h */,
 				36B750F0161693A800A6ED3B /* ViewController.m */,
 				36B750D8161693A700A6ED3B /* Supporting Files */,
+				361B1A05165AF16200BC19CB /* FFT */,
 				36B7510F161693E900A6ED3B /* AudioManager.h */,
-				36B75110161693E900A6ED3B /* AudioManager.m */,
+				36B75110161693E900A6ED3B /* AudioManager.mm */,
+				36C3017B1634966F00D44AE8 /* AudioPlayer.h */,
+				36C3017C1634966F00D44AE8 /* AudioPlayer.m */,
+				3692BE9F165740B2002A8605 /* audio_helper.h */,
+				3692BEA71657414F002A8605 /* audio_helper.cpp */,
+				3692BEB7165741F3002A8605 /* iPublicUtility */,
 			);
 			path = Ultrasound;
 			sourceTree = "<group>";
@@ -142,6 +205,8 @@
 		36B750D8161693A700A6ED3B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				36B750E0161693A700A6ED3B /* AppDelegate.h */,
+				36B750E1161693A800A6ED3B /* AppDelegate.m */,
 				36B750D9161693A700A6ED3B /* Ultrasound-Info.plist */,
 				36B750DA161693A700A6ED3B /* InfoPlist.strings */,
 				36B750DD161693A700A6ED3B /* main.m */,
@@ -286,7 +351,15 @@
 				36B750DE161693A700A6ED3B /* main.m in Sources */,
 				36B750E2161693A800A6ED3B /* AppDelegate.m in Sources */,
 				36B750F1161693A800A6ED3B /* ViewController.m in Sources */,
-				36B75111161693E900A6ED3B /* AudioManager.m in Sources */,
+				36B75111161693E900A6ED3B /* AudioManager.mm in Sources */,
+				36C3017D1634966F00D44AE8 /* AudioPlayer.m in Sources */,
+				3692BEA81657414F002A8605 /* audio_helper.cpp in Sources */,
+				3692BEB1165741E9002A8605 /* CADebugMacros.cpp in Sources */,
+				3692BEB3165741E9002A8605 /* CAXException.cpp in Sources */,
+				3692BEB5165741E9002A8605 /* CAStreamBasicDescription.cpp in Sources */,
+				361B19FA165AF09A00BC19CB /* FFTBufferManager.cpp in Sources */,
+				361B1A01165AF15100BC19CB /* rad2fft.c in Sources */,
+				361B1A03165AF15100BC19CB /* SpectrumAnalysis.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,6 +368,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				36B75106161693A800A6ED3B /* UltrasoundTests.m in Sources */,
+				3692BEA91657414F002A8605 /* audio_helper.cpp in Sources */,
+				3692BEB2165741E9002A8605 /* CADebugMacros.cpp in Sources */,
+				3692BEB4165741E9002A8605 /* CAXException.cpp in Sources */,
+				3692BEB6165741E9002A8605 /* CAStreamBasicDescription.cpp in Sources */,
+				361B19FB165AF09A00BC19CB /* FFTBufferManager.cpp in Sources */,
+				361B1A02165AF15100BC19CB /* rad2fft.c in Sources */,
+				361B1A04165AF15100BC19CB /* SpectrumAnalysis.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -470,6 +550,7 @@
 				36B7510B161693A800A6ED3B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		36B7510C161693A800A6ED3B /* Build configuration list for PBXNativeTarget "UltrasoundTests" */ = {
 			isa = XCConfigurationList;
@@ -478,6 +559,7 @@
 				36B7510E161693A800A6ED3B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
