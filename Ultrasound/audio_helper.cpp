@@ -57,11 +57,11 @@ int SetupRemoteIO (AudioUnit& inRemoteIOUnit, AURenderCallbackStruct inRenderPro
 	return 0;
 }
 */
-void SilenceData(AudioBufferList *inData)
+/*void SilenceData(AudioBufferList *inData)
 {
 	for (UInt32 i=0; i < inData->mNumberBuffers; i++)
 		memset(inData->mBuffers[i].mData, 0, inData->mBuffers[i].mDataByteSize);
-}
+}*/
 
 
 inline SInt32 smul32by16(SInt32 i32, SInt16 i16)

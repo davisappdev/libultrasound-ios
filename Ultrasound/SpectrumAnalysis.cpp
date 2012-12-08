@@ -187,7 +187,7 @@ void SpectrumAnalysisProcess(H_SPECTRUM_ANALYSIS p, const int32_t* inTimeSig, in
 {
 	if(p)
 	{
-		// Apply weigthing window
+		// Apply weighting window
 		for(uint i = 0; i < p->size; i += 2)
 		{
 			int32_t dualCoef = *((int32_t*)(p->weightingWindow + i));

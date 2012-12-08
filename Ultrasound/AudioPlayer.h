@@ -1,19 +1,20 @@
-//
-//  AudioPlayer.h
-//  Ultrasound
-//
-//  Created by AppDev on 10/21/12.
-//  Copyright (c) 2012 AppDev. All rights reserved.
-//
 
 #import <Foundation/Foundation.h>
 #import "AudioManager.h"
 
+@protocol AudioPlayerDelegate <NSObject>
+
+- (void) audioReceivedDataUpdate:(int)data;
+
+@end
+
 @interface AudioPlayer : NSObject <AudioManagerDelegate>
 
-- (void) play;
-- (void) playFrequency:(double) freq;
+- (void) start;
 - (void) stop;
+- (void) setDataToTransmit: (int) numberToSend;
 
-- (void) playFrequency:(double) freq forTime: (NSTimeInterval)time;
+@property (nonatomic) BOOL isReceiving;
+@property (nonatomic, weak) id<AudioPlayerDelegate> delegate;
+
 @end

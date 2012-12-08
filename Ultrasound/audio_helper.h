@@ -15,7 +15,7 @@ extern int drawBufferLen_alloced;
 extern SInt8 *drawBuffers[];
 
 //int SetupRemoteIO (AudioUnit& inRemoteIOUnit, AURenderCallbackStruct inRenderProc);
-void SilenceData(AudioBufferList *inData);
+//void SilenceData(AudioBufferList *inData);
 
 class DCRejectionFilter
 {

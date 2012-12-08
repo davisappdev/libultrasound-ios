@@ -27,6 +27,12 @@ const double kSampleRate = 44100;
 static AudioManager *globalSelf;
 
 
+void SilenceData(AudioBufferList *inData)
+{
+	for (UInt32 i=0; i < inData->mNumberBuffers; i++)
+		memset(inData->mBuffers[i].mData, 0, inData->mBuffers[i].mDataByteSize);
+}
+
 
 
 OSStatus RenderTone(
@@ -38,27 +44,27 @@ OSStatus RenderTone(
                     AudioBufferList 			*ioData)
 
 {
-    AudioUnitRender(globalSelf->toneUnit, ioActionFlags, inTimeStamp, 1, inNumberFrames, ioData);
-    
-    SInt8 *data_ptr = (SInt8 *)(ioData->mBuffers[0].mData);
-    for (int i=0; i<inNumberFrames; i++)
+    if(globalSelf.isReceiving)
     {
-        //printf("%i\n", data_ptr[2]);
-        data_ptr += 4;
-    }
+        AudioUnitRender(globalSelf->toneUnit, ioActionFlags, inTimeStamp, 1, inNumberFrames, ioData);
     
-    if (globalSelf->fft == NULL)
+        SInt8 *data_ptr = (SInt8 *)(ioData->mBuffers[0].mData);        
+        if (globalSelf->fft == NULL)
+        {
+            return noErr;
+        }
+        if (globalSelf->fft->NeedsNewAudioData())
+        {
+            globalSelf->fft->GrabAudioData(ioData);
+        }
+    }
+    else
     {
-        return noErr;
+        Float32 *ptr = (Float32 *)(ioData->mBuffers[0].mData);
+
+        [globalSelf.delegate renderAudioIntoData:ptr withSampleRate:kSampleRate numberOfFrames:inNumberFrames];
     }
-    
-    if (globalSelf->fft->NeedsNewAudioData())
-    {
-        globalSelf->fft->GrabAudioData(ioData);
-    }
-    
     //SilenceData(ioData);
-    
     return noErr;
 }
 
@@ -90,7 +96,7 @@ int SetupRemoteIO (AudioUnit& inRemoteIOUnit, AURenderCallbackStruct inRenderPro
         //set our required format - Canonical AU format: LPCM non-interleaved 8.24 fixed point
         outFormat.SetAUCanonical(2, false);
         outFormat.mSampleRate = 44100;
-        AudioUnitSetProperty(inRemoteIOUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &outFormat, sizeof(outFormat));
+        //AudioUnitSetProperty(inRemoteIOUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &outFormat, sizeof(outFormat));
         AudioUnitSetProperty(inRemoteIOUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 1, &outFormat, sizeof(outFormat));
 
     
@@ -144,9 +150,6 @@ int SetupRemoteIO (AudioUnit& inRemoteIOUnit, AURenderCallbackStruct inRenderPro
     fftData = new int32_t[maxFPS / 2];
     fourierSize = maxFPS / 2;
     
-    
-    [self performSelector:@selector(fourier) withObject:nil afterDelay:2.0];
-
     // Start playback
     AudioOutputUnitStart(toneUnit);
 }
@@ -170,11 +173,7 @@ int fourierSize;
         }
         AudioSessionSetActive(true);
         
-
-        
-        
     }
-    
     return self;
 }
 
@@ -187,18 +186,20 @@ int fourierSize;
 
 #define CLAMP(min,x,max) (x < min ? min : (x > max ? max : x))
 #define kRatio 21.4634
-- (void) fourier
+#define kThreshold 20.0
+- (NSArray *) fourier:(NSArray *) requestedFrequencies
 {
     fft->ComputeFFT(fftData);
     
     int y, maxY;
     maxY = 1024;
-    float maxValue = 0.0f;
-    int maxIndex = 0;
-    for (y=0; y<maxY; y++)
+   
+
+    NSMutableArray *storedFFTData = [NSMutableArray array];
+    for (y = 0; y < maxY; y++)
     {
-        CGFloat yFract = (CGFloat)y / (CGFloat)(maxY - 1);
-        CGFloat fftIdx = yFract * ((CGFloat)fourierSize);
+        CGFloat yFract = (CGFloat) y / (CGFloat)(maxY - 1);
+        CGFloat fftIdx = yFract * ((CGFloat) fourierSize);
         
         double fftIdx_i, fftIdx_f;
         fftIdx_f = modf(fftIdx, &fftIdx_i);
@@ -216,24 +217,126 @@ int fourierSize;
         interpVal = CLAMP(0., interpVal, 1.);
         interpVal *= 120;
         
-        if (interpVal > maxValue && y != maxY - 1) {
-            maxValue = interpVal;
-            maxIndex = y;
-        }
+        //float frequency = y * kRatio;
+        [storedFFTData addObject:@(interpVal)];
+        
+        
+        
         //drawBuffers[0][y] = (interpVal * 120);
         //printf("(%f, %f)  ", , interpVal * 120);
-   //     printf("(%i, %g)  ", y, interpVal);
-        
-        
+        //printf("(%i, %g)  ", y, interpVal);
     }
-    float frequency = maxIndex * kRatio;
-    printf("%g", frequency);
+    
+    int step = (kUpperFrequencyBound-kLowerFrequencyBound) / kNumberOfTransmitFrequencies;
+    int minIndex = kLowerFrequencyBound / kRatio;
+    int maxIndex = (kUpperFrequencyBound - step) / kRatio;
+    
+    double mean = [self meanOfArray:storedFFTData startIndex:minIndex endIndex:maxIndex];
+    double standardDeviation = [self standardDeviation:storedFFTData startIndex:minIndex endIndex:maxIndex mean:mean];
+    
+    printf("Mean: %f\n", mean);
+    printf("STD: %f\n", standardDeviation);
+    
+    
+    NSMutableArray *outputFrequencies = [NSMutableArray array];
+   
+    double maxValue = [self maxValueForArray:storedFFTData startIndex:minIndex endIndex:maxIndex];
+    double minimumValue = maxValue - 2.5*standardDeviation;
+    //double minimumValue = mean + 7*standardDeviation;
+    for(int i = 0; i < requestedFrequencies.count; i++)
+    {
+        int index = [requestedFrequencies[i] intValue] / kRatio;
+        float val1 = 0;
+        float val2 = 0;
+        float val3 = 0;
+        
+        if(i > 0)
+        {
+            val1 = [storedFFTData[index-1] floatValue];
+        }
+        
+        val2 = [storedFFTData[index] floatValue];
+        
+        if(i < requestedFrequencies.count - 1)
+        {
+            val3 = [storedFFTData[index+1] floatValue];
+        }
+        if(standardDeviation < 2.5)
+        {
+            [outputFrequencies addObject:@(NO)];
+        }
+      
+        else if(val1 >= minimumValue || val2 >= minimumValue || val3 >= minimumValue)
+        {
+            printf("Value: %f\n", MAX(MAX(val1, val2), MAX(val2, val3)));
+            [outputFrequencies addObject:@(YES)];
+        }
+        else
+        {
+            [outputFrequencies addObject:@(NO)];
+        }
+    }
+    
     printf("\n\n");
+
+    return [outputFrequencies copy];
+}
+
+
+- (double) maxValueForArray:(NSArray *) array startIndex:(int)start endIndex:(int) end
+{
+    double maxValue = 0;
+    for (int i = start; i <= end; i++)
+    {
+        maxValue = MAX(maxValue, [array[i] doubleValue]);
+    }
     
+    return maxValue;
+}
+- (double) meanOfArray:(NSArray *) array startIndex:(int)start endIndex:(int) end
+{
+    double sum = 0;
+    for (int i = start; i <= end; i++) {
+        sum += [array[i] doubleValue];
+    }
+    return sum / (end - start + 1);
+}
+
+- (double) standardDeviation:(NSArray *) array startIndex:(int) start endIndex:(int) end mean: (double) mean
+{
+    double totalDiff;
+    for (int i = start; i <= end; i++)
+    {
+        double diff = [array[i] doubleValue] - mean;
+        diff *= diff;
+        totalDiff += diff;
+    }
     
+    double standarDeviation = sqrt(totalDiff / (end - start + 1));
+    return standarDeviation;
+}
+- (double) meanlessStandardDeviation:(NSArray *) array startIndex:(int) start endIndex:(int) end
+{
+    double mean;
+    double sum = 0;
     
+    for (int i = start; i <= end; i++) {
+        sum += [array[i] doubleValue];
+    }
+   
+    mean = sum / (end - start + 1);
+   
+    double totalDiff;
+    for (int i = start; i <= end; i++)
+    {
+        double diff = [array[i] doubleValue] - mean;
+        diff *= diff;
+        totalDiff += diff;
+    }
     
-    [self performSelector:@selector(fourier) withObject:nil afterDelay:2.0];
+    double standarDeviation = sqrt(totalDiff / (end - start + 1));
+    return standarDeviation;
+
 }
 
 @end

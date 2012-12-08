@@ -9,12 +9,45 @@
 #import "AudioPlayer.h"
 
 @interface AudioPlayer ()
+{
+    float *frequenciesToSend;
+}
+
 @property (nonatomic, strong) AudioManager *audio;
 @property (nonatomic) double theta;
 @property (nonatomic) double frequency;
+@property (nonatomic) double t;
+@property (nonatomic) BOOL isPlaying;
+@property (nonatomic, strong) NSTimer *timer;
 @end
 
 @implementation AudioPlayer
+
+- (void) setDataToTransmit: (int) numberToSend
+{
+    NSArray *dataToSend = [self convertByteToBoolData:numberToSend];
+    NSArray *frequencies = [self frequenciesUsedForTransmitting];
+    NSLog(@"%@", frequencies);
+   
+    if (frequenciesToSend)
+    {
+        free(frequenciesToSend);
+    }
+    
+    frequenciesToSend = malloc(sizeof(float) * kNumberOfTransmitFrequencies);
+    for (int i = 0; i < dataToSend.count; i++)
+    {
+        if ([dataToSend[i] boolValue])
+        {
+            //[tempFrequenciesToSend addObject:frequencies[i]];
+            frequenciesToSend[i] = [frequencies[i] floatValue];
+        }
+        else
+        {
+            frequenciesToSend[i] = 0.0f;
+        }
+    }
+}
 
 - (id) init
 {
@@ -22,55 +55,139 @@
     if(self)
     {
         self.audio = [[AudioManager alloc] initWithDelegate:self];
+        //[self setDataToTransmit];
     }
     
     return self;
 }
 
-- (void) play
+
+- (void) getTransmittedData
 {
+    NSArray *frequenciesToCheck = [self frequenciesUsedForTransmitting];
+    NSArray *receivedData = [self.audio fourier:frequenciesToCheck];
     
-    [self.audio startAudio];
-}
-
-- (void) playFrequency:(double)freq
-{
-    self.frequency = freq;
-    [self.audio startAudio];
-}
-
-- (void) playFrequency:(double)freq forTime:(NSTimeInterval)time
-{
-    [self playFrequency:freq];
     
-    [self performSelector:@selector(stop) withObject:nil afterDelay:time];
+    if(![self isDataAllZero:receivedData])
+    {
+        Byte byte = [self convertBoolDataToByte:receivedData];
+        [self.delegate audioReceivedDataUpdate:(int)byte];
+    }
+    else
+    {
+        [self.delegate audioReceivedDataUpdate:0];
+    }
+    
 }
 
-- (void) stop
+- (BOOL) isDataAllZero:(NSArray *) data
 {
-    [self.audio stopAudio];
+    for(int i = 0; i < data.count; i++)
+    {
+        if([data[i] boolValue])
+        {
+            return NO;
+        }
+    }
+    
+    return YES;
+}
+
+- (Byte) convertBoolDataToByte:(NSArray *)data
+{
+    Byte sum = 0;
+    for(int i = 0; i < data.count; i++)
+    {
+        BOOL b = [data[i] boolValue];
+        if(b)
+        {
+            sum += pow(2, i);
+        }
+    }
+    
+    return sum;
+}
+
+- (NSArray *) frequenciesUsedForTransmitting
+{
+    NSMutableArray *freqs = [NSMutableArray array];
+    int step = (kUpperFrequencyBound-kLowerFrequencyBound) / kNumberOfTransmitFrequencies;
+    for(int f = kLowerFrequencyBound; f <= kUpperFrequencyBound - step; f += step)
+    {
+        [freqs addObject:@(f)];
+    }
+    
+    return [freqs copy];
 }
 
 
 - (void) renderAudioIntoData:(Float32 *)data withSampleRate:(double)sampleRate numberOfFrames:(int)numberOfFrames
+{   
+    if(self.isPlaying)
+    {
+        for (UInt32 frame = 0; frame < numberOfFrames; frame++)
+        {
+            if(frequenciesToSend == NULL)
+            {
+                data[frame] = 0;
+                continue;
+            }
+            
+            float sum = 0.0f;
+            self.t += 1.0 / sampleRate;
+            for (int i = 0; i < kNumberOfTransmitFrequencies; i++)
+            {
+                sum += sin(self.t * frequenciesToSend[i] * 2 * M_PI);
+            }
+            
+            data[frame] = sum;
+        }
+    }
+
+}
+
+- (NSArray *) convertByteToBoolData:(Byte) byte
+{  
+    BOOL p0 = (byte & 0x01) != 0 ? YES : NO;
+    BOOL p1 = (byte & 0x02) != 0 ? YES : NO;
+    BOOL p2 = (byte & 0x04) != 0 ? YES : NO;
+    BOOL p3 = (byte & 0x08) != 0 ? YES : NO;
+    BOOL p4 = (byte & 0x10) != 0 ? YES : NO;
+    BOOL p5 = (byte & 0x20) != 0 ? YES : NO;
+    BOOL p6 = (byte & 0x40) != 0 ? YES : NO;
+    BOOL p7 = (byte & 0x80) != 0 ? YES : NO;
+    
+    return [NSArray arrayWithObjects:@(p0), @(p1), @(p2), @(p3), @(p4), @(p5), @(p6), @(p7), nil];
+
+}
+
+- (void) start
 {
-    // Fixed amplitude is good enough for our purposes
-	const double amplitude = 0.25;
-	// Get the tone parameters out of the view controller
+    if(self.isReceiving)
+    {
+        self.timer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(getTransmittedData) userInfo:nil repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
+    }
+    else
+    {
+        self.isPlaying = YES;
+    }
+    self.audio.isReceiving = self.isReceiving;
     
+    [self.audio startAudio];
+}
+
+- (void) stop
+{
+    [self.timer invalidate];
+    self.isPlaying = NO;
     
-	double theta_increment = 2.0 * M_PI * self.frequency / sampleRate;
-	
-	// Generate the samples
-	for (UInt32 frame = 0; frame < numberOfFrames; frame++)
-	{
-		data[frame] = sin(self.theta) * amplitude;
-		
-		self.theta += theta_increment;
-		if (self.theta > 2.0 * M_PI)
-		{
-			self.theta -= 2.0 * M_PI;
-		}
-	}
+    [self.audio stopAudio];
+}
+
+- (void) setIsReceiving:(BOOL)isReceiving
+{
+    _isReceiving = isReceiving;
+    self.audio.isReceiving = isReceiving;
 }
 @end
