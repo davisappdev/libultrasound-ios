@@ -72,6 +72,7 @@
     {
         Byte byte = [self convertBoolDataToByte:receivedData];
         [self.delegate audioReceivedDataUpdate:(int)byte];
+        printf("%i\n\n", (int)byte);
     }
     else
     {
@@ -176,7 +177,7 @@
 {
     if(self.isReceiving)
     {
-        self.timer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(getTransmittedData) userInfo:nil repeats:YES];
+        self.timer = [NSTimer timerWithTimeInterval:0.2 target:self selector:@selector(getTransmittedData) userInfo:nil repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
     }
     else

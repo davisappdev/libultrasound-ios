@@ -51,15 +51,16 @@
     
     if(!self.audioPlayer.isReceiving)
     {
-        self.transmitTimer = [NSTimer timerWithTimeInterval:5.0 target:self selector:@selector(updateTransmission) userInfo:nil repeats:YES];
-        [[NSRunLoop mainRunLoop] addTimer:self.transmitTimer forMode:NSRunLoopCommonModes];
+        self.transmitTimer = [NSTimer timerWithTimeInterval:0.6 target:self selector:@selector(updateTransmission) userInfo:nil repeats:YES];
+        //[[NSRunLoop mainRunLoop] addTimer:self.transmitTimer forMode:NSRunLoopCommonModes];
     }
     
 }
 
 - (void) updateTransmission
 {
-    //[self.audioPlayer setDataToTransmit:self.byteToTransmit];
+    [self.audioPlayer setDataToTransmit:self.byteToTransmit];
+    self.numberToSend.text = [NSString stringWithFormat:@"%i", (int)self.byteToTransmit];
     self.byteToTransmit++;
 }
 
