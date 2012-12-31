@@ -280,7 +280,7 @@ const float amplitudeAdjustments[8] = {1.38888888888889, 1.66666666666667, 1.388
     
     
     
-    double minimumValue = maxValue - 2.0*standardDeviation;
+    double minimumValue = maxValue - 4.0*standardDeviation;
     printf("%f\n", maxValue);
     //double minimumValue = mean + 0.0*standardDeviation;
     //minimumValue = 0.0001;
