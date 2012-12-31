@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#define kLowerFrequencyBound 1000
-#define kUpperFrequencyBound 3000
+#define kLowerFrequencyBound 19000
+#define kUpperFrequencyBound 21000
 #define kNumberOfTransmitFrequencies 8
 
 

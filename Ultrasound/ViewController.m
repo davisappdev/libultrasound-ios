@@ -12,6 +12,8 @@
 @property (weak, nonatomic) IBOutlet UIStepper *stepper;
 @property (nonatomic, strong) AudioPlayer *audioPlayer;
 @property (nonatomic, weak) UIButton *button;
+/*@property (nonatomic) Byte byteToTransmit;
+@property (nonatomic, strong) NSTimer *transmitTimer;*/
 @end
 
 @implementation ViewController
@@ -42,8 +44,23 @@
     [sender setEnabled:NO];
     [sender setTitleColor:[UIColor grayColor] forState:UIControlStateDisabled];
     [sender setAlpha:0.4];
+    
     self.button = sender;
+    
+    
+    /*if(!self.audioPlayer.isReceiving)
+    {
+        self.transmitTimer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(updateTransmission) userInfo:nil repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:self.transmitTimer forMode:NSRunLoopCommonModes];
+    }*/
+    
 }
+
+/*- (void) updateTransmission
+{
+    [self.audioPlayer setDataToTransmit:255];
+    self.byteToTransmit++;
+}*/
 
 - (IBAction)stepperValueChanged:(UIStepper *)sender
 {
@@ -72,6 +89,9 @@
 - (IBAction)modeChanged:(id)sender
 {
     [self.audioPlayer stop];
+    
+    /*[self.transmitTimer invalidate];
+    self.byteToTransmit = 0;*/
     
     if([sender selectedSegmentIndex] == 0)
     {

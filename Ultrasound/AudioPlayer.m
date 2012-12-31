@@ -27,7 +27,7 @@
 {
     NSArray *dataToSend = [self convertByteToBoolData:numberToSend];
     NSArray *frequencies = [self frequenciesUsedForTransmitting];
-    NSLog(@"%@", frequencies);
+    NSLog(@"%@", dataToSend);
    
     if (frequenciesToSend)
     {
@@ -135,9 +135,10 @@
             
             float sum = 0.0f;
             self.t += 1.0 / sampleRate;
+            double time = self.t * 2 * M_PI;
             for (int i = 0; i < kNumberOfTransmitFrequencies; i++)
             {
-                sum += sin(self.t * frequenciesToSend[i] * 2 * M_PI);
+                sum += sin(time * frequenciesToSend[i]);
             }
             
             data[frame] = sum;
@@ -147,7 +148,17 @@
 }
 
 - (NSArray *) convertByteToBoolData:(Byte) byte
-{  
+{
+    /*NSMutableArray *tempBools = [NSMutableArray array];
+    for(int i = 0; i < 8; i++)
+    {
+        BOOL b = (num & (uint)pow(2, i)) != 0 ? YES : NO;
+        [tempBools addObject:@(b)];
+    }
+    
+    return [tempBools copy];*/
+    
+    
     BOOL p0 = (byte & 0x01) != 0 ? YES : NO;
     BOOL p1 = (byte & 0x02) != 0 ? YES : NO;
     BOOL p2 = (byte & 0x04) != 0 ? YES : NO;

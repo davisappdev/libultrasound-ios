@@ -185,8 +185,11 @@ int fourierSize;
 
 
 #define CLAMP(min,x,max) (x < min ? min : (x > max ? max : x))
-#define kRatio 21.4634
-#define kThreshold 20.0
+//#define kRatio 21.5542521994135      //21.533203125
+#define kRatio 21.533203125      //21.533203125
+//#define kRatio 21.5437276622068
+const float amplitudeAdjustments[8] = {1.38888888888889, 1.66666666666667, 1.38888888888889, 1.53846153846154, 1.53846153846154, 1.47058823529412, 2.2, 1.8};
+
 - (NSArray *) fourier:(NSArray *) requestedFrequencies
 {
     fft->ComputeFFT(fftData);
@@ -226,6 +229,15 @@ int fourierSize;
         //printf("(%f, %f)  ", , interpVal * 120);
         //printf("(%i, %g)  ", y, interpVal);
     }
+    [storedFFTData removeLastObject];
+    
+    /*
+    for(int i = 0; i < storedFFTData.count; i++)
+    {
+        printf("(%i, %g)  ", i, [storedFFTData[i] floatValue]);
+    }
+    printf("\n\n");*/
+    
     
     int step = (kUpperFrequencyBound-kLowerFrequencyBound) / kNumberOfTransmitFrequencies;
     int minIndex = kLowerFrequencyBound / kRatio;
@@ -240,35 +252,68 @@ int fourierSize;
     
     NSMutableArray *outputFrequencies = [NSMutableArray array];
    
-    double maxValue = [self maxValueForArray:storedFFTData startIndex:minIndex endIndex:maxIndex];
-    double minimumValue = maxValue - 2.5*standardDeviation;
-    //double minimumValue = mean + 7*standardDeviation;
+    double maxValue = 0;
     for(int i = 0; i < requestedFrequencies.count; i++)
     {
-        int index = [requestedFrequencies[i] intValue] / kRatio;
+        int index = round([requestedFrequencies[i] intValue] / kRatio);
         float val1 = 0;
         float val2 = 0;
         float val3 = 0;
         
-        if(i > 0)
+        if(index > 0)
         {
-            val1 = [storedFFTData[index-1] floatValue];
+            val1 = [storedFFTData[index-1] floatValue] * amplitudeAdjustments[i];
+        }
+        val2 = [storedFFTData[index] floatValue] * amplitudeAdjustments[i];
+        if(index < requestedFrequencies.count-1)
+        {
+            val3 = [storedFFTData[index+1] floatValue] * amplitudeAdjustments[i];
         }
         
-        val2 = [storedFFTData[index] floatValue];
+        float val = MAX(MAX(val1, val2), MAX(val2, val3));
         
-        if(i < requestedFrequencies.count - 1)
+        //  * (i+1) * kAmplitudeAdjust;
+        //val += val * i * kAmplitudeAdjust;
+        
+        maxValue = MAX(maxValue, val);
+    }
+    
+    
+    
+    double minimumValue = maxValue - 2.0*standardDeviation;
+    printf("%f\n", maxValue);
+    //double minimumValue = mean + 0.0*standardDeviation;
+    //minimumValue = 0.0001;
+    for(int i = 0; i < requestedFrequencies.count; i++)
+    {
+        int index = round([requestedFrequencies[i] intValue] / kRatio);
+        
+        float val1 = 0;
+        float val2 = 0;
+        float val3 = 0;
+        
+        if(index > 0)
         {
-            val3 = [storedFFTData[index+1] floatValue];
+            val1 = [storedFFTData[index-1] floatValue] * amplitudeAdjustments[i];
         }
-        if(standardDeviation < 2.5)
+        val2 = [storedFFTData[index] floatValue] * amplitudeAdjustments[i];
+        if(index < requestedFrequencies.count-1)
+        {
+            val3 = [storedFFTData[index+1] floatValue] * amplitudeAdjustments[i];
+        }
+        
+        float val = MAX(MAX(val1, val2), MAX(val2, val3));
+        //val += val * i * kAmplitudeAdjust;
+        
+        printf("%g  ", val);
+        
+        if(standardDeviation < 0.5)
         {
             [outputFrequencies addObject:@(NO)];
         }
-      
-        else if(val1 >= minimumValue || val2 >= minimumValue || val3 >= minimumValue)
+        else if(val >= minimumValue)
         {
-            printf("Value: %f\n", MAX(MAX(val1, val2), MAX(val2, val3)));
+            //printf("Value: %f\n", MAX(MAX(val1, val2), MAX(val2, val3)));
             [outputFrequencies addObject:@(YES)];
         }
         else
