@@ -12,8 +12,8 @@
 @property (weak, nonatomic) IBOutlet UIStepper *stepper;
 @property (nonatomic, strong) AudioPlayer *audioPlayer;
 @property (nonatomic, weak) UIButton *button;
-/*@property (nonatomic) Byte byteToTransmit;
-@property (nonatomic, strong) NSTimer *transmitTimer;*/
+@property (nonatomic) Byte byteToTransmit;
+@property (nonatomic, strong) NSTimer *transmitTimer;
 @end
 
 @implementation ViewController
@@ -27,6 +27,7 @@
     self.audioPlayer.isReceiving = YES;
     
     self.numberToSend.delegate = self;
+    self.byteToTransmit = 230;
     //[self.audioPlayer playFrequency:880 forTime:10.0];
     
 }
@@ -48,19 +49,19 @@
     self.button = sender;
     
     
-    /*if(!self.audioPlayer.isReceiving)
+    if(!self.audioPlayer.isReceiving)
     {
-        self.transmitTimer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(updateTransmission) userInfo:nil repeats:YES];
+        self.transmitTimer = [NSTimer timerWithTimeInterval:5.0 target:self selector:@selector(updateTransmission) userInfo:nil repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:self.transmitTimer forMode:NSRunLoopCommonModes];
-    }*/
+    }
     
 }
 
-/*- (void) updateTransmission
+- (void) updateTransmission
 {
-    [self.audioPlayer setDataToTransmit:255];
+    //[self.audioPlayer setDataToTransmit:self.byteToTransmit];
     self.byteToTransmit++;
-}*/
+}
 
 - (IBAction)stepperValueChanged:(UIStepper *)sender
 {
@@ -90,8 +91,8 @@
 {
     [self.audioPlayer stop];
     
-    /*[self.transmitTimer invalidate];
-    self.byteToTransmit = 0;*/
+    [self.transmitTimer invalidate];
+    self.byteToTransmit = 230;
     
     if([sender selectedSegmentIndex] == 0)
     {
