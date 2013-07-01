@@ -111,14 +111,16 @@
 
 - (NSArray *) frequenciesUsedForTransmitting
 {
-    NSMutableArray *freqs = [NSMutableArray array];
+    /*NSMutableArray *freqs = [NSMutableArray array];
     int step = (kUpperFrequencyBound-kLowerFrequencyBound) / kNumberOfTransmitFrequencies;
     for(int f = kLowerFrequencyBound; f <= kUpperFrequencyBound - step; f += step)
     {
         [freqs addObject:@(f)];
     }
     
-    return [freqs copy];
+    return [freqs copy];*/
+    
+    return @[@18000, @18150, @18600, @19500];
 }
 
 
@@ -134,13 +136,27 @@
                 continue;
             }
             
+            
             float sum = 0.0f;
             self.t += 1.0 / sampleRate;
             double time = self.t * 2 * M_PI;
+            
+            
+            /*data[frame] = sin(time * 587.33);
+            data[frame] += sin(time * 880);*/
+
+
+            
+            
+            float divisor = 0;
             for (int i = 0; i < kNumberOfTransmitFrequencies; i++)
             {
-                sum += sin(time * frequenciesToSend[i]);
+                double freq = frequenciesToSend[i];
+                sum += sin(time * freq);
+                divisor += freq > 1 ? 1 : 0;
             }
+            
+            sum /= divisor;
             
             data[frame] = sum;
         }
@@ -164,12 +180,12 @@
     BOOL p1 = (byte & 0x02) != 0 ? YES : NO;
     BOOL p2 = (byte & 0x04) != 0 ? YES : NO;
     BOOL p3 = (byte & 0x08) != 0 ? YES : NO;
-    BOOL p4 = (byte & 0x10) != 0 ? YES : NO;
+    /*BOOL p4 = (byte & 0x10) != 0 ? YES : NO;
     BOOL p5 = (byte & 0x20) != 0 ? YES : NO;
     BOOL p6 = (byte & 0x40) != 0 ? YES : NO;
-    BOOL p7 = (byte & 0x80) != 0 ? YES : NO;
+    BOOL p7 = (byte & 0x80) != 0 ? YES : NO;*/
     
-    return [NSArray arrayWithObjects:@(p0), @(p1), @(p2), @(p3), @(p4), @(p5), @(p6), @(p7), nil];
+    return @[@(p0), @(p1), @(p2), @(p3)];
 
 }
 

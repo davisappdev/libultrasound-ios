@@ -95,7 +95,7 @@ int SetupRemoteIO (AudioUnit& inRemoteIOUnit, AURenderCallbackStruct inRenderPro
 		
         //set our required format - Canonical AU format: LPCM non-interleaved 8.24 fixed point
         outFormat.SetAUCanonical(2, false);
-        outFormat.mSampleRate = 44100;
+        outFormat.mSampleRate = kSampleRate;
         //AudioUnitSetProperty(inRemoteIOUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &outFormat, sizeof(outFormat));
         AudioUnitSetProperty(inRemoteIOUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 1, &outFormat, sizeof(outFormat));
 
@@ -186,10 +186,18 @@ int fourierSize;
 
 #define CLAMP(min,x,max) (x < min ? min : (x > max ? max : x))
 //#define kRatio 21.5542521994135      //21.533203125
-#define kRatio 21.533203125      //21.533203125
+#define kRatio (21.533203125)       //21.533203125
 //#define kRatio 21.5437276622068
-//const float amplitudeAdjustments[8] = {1.38888888888889, 1.8, 1.38888888888889, 1.53846153846154, 1.53846153846154, 1.47058823529412, 2.2, 1.9};
-const float amplitudeAdjustments[8] = {1, 1, 1, 1, 1, 1, 1, 1};
+
+void printFFT(int *fftData, int len)
+{
+    for(int i = 0; i < len; i++)
+    {
+        printf("%d, ", fftData[i]);
+    }
+    printf("\n");
+}
+
 
 - (NSArray *) fourier:(NSArray *) requestedFrequencies
 {
@@ -197,6 +205,8 @@ const float amplitudeAdjustments[8] = {1, 1, 1, 1, 1, 1, 1, 1};
     
     int y, maxY;
     maxY = 1024;
+    
+    //printFFT(fftData, 1024);
    
 
     NSMutableArray *storedFFTData = [NSMutableArray array];
@@ -243,9 +253,8 @@ const float amplitudeAdjustments[8] = {1, 1, 1, 1, 1, 1, 1, 1};
     printf("\n\n");*/
     
     
-    int step = (kUpperFrequencyBound-kLowerFrequencyBound) / kNumberOfTransmitFrequencies;
-    int minIndex = kLowerFrequencyBound / kRatio;
-    int maxIndex = (kUpperFrequencyBound - step) / kRatio;
+    int minIndex = round([requestedFrequencies[0] intValue] / kRatio) - 20;
+    int maxIndex = round([[requestedFrequencies lastObject] intValue] / kRatio) + 20;
     
     double mean = [self meanOfArray:storedFFTData startIndex:minIndex endIndex:maxIndex];
     double standardDeviation = [self standardDeviation:storedFFTData startIndex:minIndex endIndex:maxIndex mean:mean];
@@ -268,18 +277,20 @@ const float amplitudeAdjustments[8] = {1, 1, 1, 1, 1, 1, 1, 1};
     {
         int index = round([requestedFrequencies[i] intValue] / kRatio);
         // Calculate the difference neighboring frequency indices.
-        int dIndex = (i == requestedFrequencies.count-1) ? (index - round([requestedFrequencies[i-1] intValue] / kRatio)) : (round([requestedFrequencies[i+1] intValue] / kRatio) - index);
+        int dIndexUp = (i == requestedFrequencies.count-1) ? (index - round([requestedFrequencies[i-1] intValue] / kRatio)) : (round([requestedFrequencies[i+1] intValue] / kRatio) - index);
+        int dIndexDown = (i == 0) ? (round([requestedFrequencies[i+1] intValue] / kRatio) - index) : (index - round([requestedFrequencies[i-1] intValue] / kRatio));
 //        printf("%d\n----------\n", dIndex);
         
-        int upAndDownAmt = ceilf(dIndex / 2.0f) - 1;
+        int upAmt = ceilf(dIndexUp / 2.0f) - 1;
+        int downAmt = ceilf(dIndexDown / 2.0f) - 1;
         
         double maxVal = 0;
-        for(int j = index; j <= index + upAndDownAmt; j++)
+        for(int j = index; j <= index + upAmt; j++)
         {
             double val = [storedFFTData[j] floatValue];
             maxVal = MAX(maxVal, val);
         }
-        for(int j = index; j >= index - upAndDownAmt; j--)
+        for(int j = index; j >= index - downAmt; j--)
         {
             double val = [storedFFTData[j] floatValue];
             maxVal = MAX(maxVal, val);
@@ -296,7 +307,7 @@ const float amplitudeAdjustments[8] = {1, 1, 1, 1, 1, 1, 1, 1};
             [outputFrequencies addObject:@(NO)];
         }
         //else if(val >= minimumValue)
-        else if(maxVal > standardDeviation)
+        else if(maxVal > standardDeviation/2.0)
         {
             //printf("Value: %f\n", MAX(MAX(val1, val2), MAX(val2, val3)));
             [outputFrequencies addObject:@(YES)];
@@ -315,6 +326,9 @@ const float amplitudeAdjustments[8] = {1, 1, 1, 1, 1, 1, 1, 1};
 
 - (double) maxValueForArray:(NSArray *) array startIndex:(int)start endIndex:(int) end
 {
+    start = MAX(0, start);
+    end = MIN(array.count-1, end);
+    
     double maxValue = 0;
     for (int i = start; i <= end; i++)
     {
@@ -325,6 +339,9 @@ const float amplitudeAdjustments[8] = {1, 1, 1, 1, 1, 1, 1, 1};
 }
 - (double) meanOfArray:(NSArray *) array startIndex:(int)start endIndex:(int) end
 {
+    start = MAX(0, start);
+    end = MIN(array.count-1, end);
+    
     double sum = 0;
     for (int i = start; i <= end; i++) {
         sum += [array[i] doubleValue];
@@ -334,6 +351,9 @@ const float amplitudeAdjustments[8] = {1, 1, 1, 1, 1, 1, 1, 1};
 
 - (double) standardDeviation:(NSArray *) array startIndex:(int) start endIndex:(int) end mean: (double) mean
 {
+    start = MAX(0, start);
+    end = MIN(array.count-1, end);
+    
     double totalDiff = 0.0;
     for (int i = start; i <= end; i++)
     {

@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#define kLowerFrequencyBound 19000
-#define kUpperFrequencyBound 21000
-#define kNumberOfTransmitFrequencies 8
+#define kLowerFrequencyBound 18000
+#define kUpperFrequencyBound 20500
+#define kNumberOfTransmitFrequencies 4
 
 
 @protocol AudioManagerDelegate <NSObject>
