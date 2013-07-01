@@ -232,6 +232,9 @@ const float amplitudeAdjustments[8] = {1, 1, 1, 1, 1, 1, 1, 1};
     }
     [storedFFTData removeLastObject];
     
+    
+
+    
     /*
     for(int i = 0; i < storedFFTData.count; i++)
     {
@@ -253,29 +256,6 @@ const float amplitudeAdjustments[8] = {1, 1, 1, 1, 1, 1, 1, 1};
     
     NSMutableArray *outputFrequencies = [NSMutableArray array];
    
-    double maxValue = 0;
-    for(int i = 0; i < requestedFrequencies.count; i++)
-    {
-        int index = round([requestedFrequencies[i] intValue] / kRatio);
-        double val1 = 0;
-        double val2 = 0;
-        double val3 = 0;
-        
-        /*if(index > 0)
-        {
-            val1 = [storedFFTData[index-1] floatValue] * amplitudeAdjustments[i];
-        }*/
-        val2 = [storedFFTData[index] floatValue] * amplitudeAdjustments[i];
-        /*if(index < requestedFrequencies.count-1)
-        {
-            val3 = [storedFFTData[index+1] floatValue] * amplitudeAdjustments[i];
-        }*/
-        
-        double val = MAX(MAX(val1, val2), MAX(val2, val3));
-        //val = powf(val, 13);
-        
-        maxValue = MAX(maxValue, val);
-    }
     
     
     
@@ -287,27 +267,28 @@ const float amplitudeAdjustments[8] = {1, 1, 1, 1, 1, 1, 1, 1};
     for(int i = 0; i < requestedFrequencies.count; i++)
     {
         int index = round([requestedFrequencies[i] intValue] / kRatio);
+        // Calculate the difference neighboring frequency indices.
+        int dIndex = (i == requestedFrequencies.count-1) ? (index - round([requestedFrequencies[i-1] intValue] / kRatio)) : (round([requestedFrequencies[i+1] intValue] / kRatio) - index);
+//        printf("%d\n----------\n", dIndex);
         
-        double val1 = 0;
-        double val2 = 0;
-        double val3 = 0;
+        int upAndDownAmt = ceilf(dIndex / 2.0f) - 1;
         
-        /*if(index > 0)
+        double maxVal = 0;
+        for(int j = index; j <= index + upAndDownAmt; j++)
         {
-            val1 = [storedFFTData[index-1] floatValue] * amplitudeAdjustments[i];
-        }*/
-        val2 = [storedFFTData[index] floatValue] * amplitudeAdjustments[i];
-        /*if(index < requestedFrequencies.count-1)
+            double val = [storedFFTData[j] floatValue];
+            maxVal = MAX(maxVal, val);
+        }
+        for(int j = index; j >= index - upAndDownAmt; j--)
         {
-            val3 = [storedFFTData[index+1] floatValue] * amplitudeAdjustments[i];
-        }*/
-        
-        double val = MAX(MAX(val1, val2), MAX(val2, val3));
+            double val = [storedFFTData[j] floatValue];
+            maxVal = MAX(maxVal, val);
+        }
         
         
         //val += val * i * kAmplitudeAdjust;
         
-        printf("%g  ", val);
+        printf("%g  ", maxVal);
         //printf("%g  ", ratio);
         
         if(standardDeviation < 0.5)
@@ -315,7 +296,7 @@ const float amplitudeAdjustments[8] = {1, 1, 1, 1, 1, 1, 1, 1};
             [outputFrequencies addObject:@(NO)];
         }
         //else if(val >= minimumValue)
-        else if(val > standardDeviation)
+        else if(maxVal > standardDeviation)
         {
             //printf("Value: %f\n", MAX(MAX(val1, val2), MAX(val2, val3)));
             [outputFrequencies addObject:@(YES)];
@@ -353,7 +334,7 @@ const float amplitudeAdjustments[8] = {1, 1, 1, 1, 1, 1, 1, 1};
 
 - (double) standardDeviation:(NSArray *) array startIndex:(int) start endIndex:(int) end mean: (double) mean
 {
-    double totalDiff;
+    double totalDiff = 0.0;
     for (int i = start; i <= end; i++)
     {
         double diff = [array[i] doubleValue] - mean;
@@ -375,7 +356,7 @@ const float amplitudeAdjustments[8] = {1, 1, 1, 1, 1, 1, 1, 1};
    
     mean = sum / (end - start + 1);
    
-    double totalDiff;
+    double totalDiff = 0.0;
     for (int i = start; i <= end; i++)
     {
         double diff = [array[i] doubleValue] - mean;
