@@ -243,39 +243,34 @@ void printFFT(int *fftData, int len)
     [storedFFTData removeLastObject];
     
     
-
-    
-    /*
-    for(int i = 0; i < storedFFTData.count; i++)
-    {
-        printf("(%i, %g)  ", i, [storedFFTData[i] floatValue]);
-    }
-    printf("\n\n");*/
     
     
     int minIndex = round([requestedFrequencies[0] intValue] / kRatio) - 20;
     int maxIndex = round([[requestedFrequencies lastObject] intValue] / kRatio) + 20;
     
+    for(int i = minIndex; i <= maxIndex; i++)
+    {
+        printf("%d,%f\n", i - minIndex, [storedFFTData[i] floatValue]);
+    }
+    
     double mean = [self meanOfArray:storedFFTData startIndex:minIndex endIndex:maxIndex];
     double standardDeviation = [self standardDeviation:storedFFTData startIndex:minIndex endIndex:maxIndex mean:mean];
+    double maxValue = [self maxValueForArray:storedFFTData startIndex:minIndex endIndex:maxIndex];
+    double cutoffValue = maxValue - (standardDeviation * 2);
     
     printf("Mean: %f\n", mean);
     printf("STD: %f\n", standardDeviation);
+    printf("Cutoff Value: %f\n", cutoffValue);
     
     
     NSMutableArray *outputFrequencies = [NSMutableArray array];
    
     
-    
-    
-    //double minimumValue = maxValue - 3.0*standardDeviation;
-    //double minimumValue = standardDeviation*standardDeviation;
-    //printf("%f\n", maxValue);
-    //double minimumValue = mean + 0.0*standardDeviation;
-    //minimumValue = 0.0001;
     for(int i = 0; i < requestedFrequencies.count; i++)
     {
         int index = round([requestedFrequencies[i] intValue] / kRatio);
+        NSLog(@"Index: %i", index-minIndex);
+        
         // Calculate the difference neighboring frequency indices.
         int dIndexUp = (i == requestedFrequencies.count-1) ? (index - round([requestedFrequencies[i-1] intValue] / kRatio)) : (round([requestedFrequencies[i+1] intValue] / kRatio) - index);
         int dIndexDown = (i == 0) ? (round([requestedFrequencies[i+1] intValue] / kRatio) - index) : (index - round([requestedFrequencies[i-1] intValue] / kRatio));
@@ -284,22 +279,22 @@ void printFFT(int *fftData, int len)
         int upAmt = ceilf(dIndexUp / 2.0f) - 1;
         int downAmt = ceilf(dIndexDown / 2.0f) - 1;
         
-        double maxVal = 0;
+        double val = 0;
         for(int j = index; j <= index + upAmt; j++)
         {
-            double val = [storedFFTData[j] floatValue];
-            maxVal = MAX(maxVal, val);
+            double a = [storedFFTData[j] floatValue];
+            val = MAX(val, a);
         }
         for(int j = index; j >= index - downAmt; j--)
         {
-            double val = [storedFFTData[j] floatValue];
-            maxVal = MAX(maxVal, val);
+            double a = [storedFFTData[j] floatValue];
+            val = MAX(val, a);
         }
         
         
         //val += val * i * kAmplitudeAdjust;
         
-        printf("%g  ", maxVal);
+        printf("%g  ", val);
         //printf("%g  ", ratio);
         
         if(standardDeviation < 0.5)
@@ -307,7 +302,7 @@ void printFFT(int *fftData, int len)
             [outputFrequencies addObject:@(NO)];
         }
         //else if(val >= minimumValue)
-        else if(maxVal > standardDeviation/2.0)
+        else if(val > cutoffValue)
         {
             //printf("Value: %f\n", MAX(MAX(val1, val2), MAX(val2, val3)));
             [outputFrequencies addObject:@(YES)];

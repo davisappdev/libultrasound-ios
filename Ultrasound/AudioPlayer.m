@@ -124,6 +124,8 @@
 }
 
 
+float amplitudeAdjustmentsIPadTransmit[] = {4.0, 4.0, 10.0, 15.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
+float amplitudeAdjustmentsITouchTransmit[] = {1.0, 1.0, 1.0, 1.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
 - (void) renderAudioIntoData:(Float32 *)data withSampleRate:(double)sampleRate numberOfFrames:(int)numberOfFrames
 {   
     if(self.isPlaying)
@@ -152,7 +154,7 @@
             for (int i = 0; i < kNumberOfTransmitFrequencies; i++)
             {
                 double freq = frequenciesToSend[i];
-                sum += sin(time * freq);
+                sum += sin(time * freq) * amplitudeAdjustmentsITouchTransmit[i];
                 divisor += freq > 1 ? 1 : 0;
             }
             
