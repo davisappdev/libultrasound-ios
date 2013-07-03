@@ -241,7 +241,7 @@ void printFFT(int *fftData, int len)
     
     int minIndex = round([requestedFrequencies[0] intValue] / kRatio) - 20;
     int maxIndex = round([[requestedFrequencies lastObject] intValue] / kRatio) + 20;
-    int delimIndex = round(kPacketDeliminatorFrequency / kRatio);
+    int delimIndex = round(kPacketDelimiterFrequency / kRatio);
     
     /*for(int i = minIndex; i <= maxIndex; i++)
     {
@@ -323,8 +323,8 @@ void printFFT(int *fftData, int len)
     
     if(allBitsOff && delimValue > 15.0 && fabs(delimValue-120) > DBL_EPSILON)
     {
-        printf("DELIMINATOR DETECTED\n");
-        return nil; // Returning nil indicates that the deliminator was detected
+        printf("DELIMITER DETECTED\n");
+        return nil; // Returning nil indicates that the delimiter was detected
     }
     
     //printf("\n");

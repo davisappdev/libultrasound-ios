@@ -60,7 +60,7 @@
 
 - (IBAction)outputDelimPressed:(UIButton *)button
 {
-    [self.audioPlayer transmitPacketDeliminatorWithCallback:nil];
+    [self.audioPlayer transmitPacketDelimiterWithCallback:nil];
 }
 
 - (IBAction)stepperValueChanged:(UIStepper *)sender
