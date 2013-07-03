@@ -55,7 +55,15 @@
     if(self)
     {
         self.audio = [[AudioManager alloc] initWithDelegate:self];
-        //[self setDataToTransmit];
+        
+        if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
+        {
+            amplitudeAdjustments = amplitudeAdjustmentsITouchTransmit;
+        }
+        else
+        {
+            amplitudeAdjustments = amplitudeAdjustmentsIPadTransmit;
+        }
     }
     
     return self;
@@ -126,6 +134,7 @@
 
 float amplitudeAdjustmentsIPadTransmit[] = {4.0, 4.0, 10.0, 15.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
 float amplitudeAdjustmentsITouchTransmit[] = {1.0, 1.0, 1.0, 1.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
+float *amplitudeAdjustments; // Set at runtime for specific device;
 - (void) renderAudioIntoData:(Float32 *)data withSampleRate:(double)sampleRate numberOfFrames:(int)numberOfFrames
 {   
     if(self.isPlaying)
@@ -154,7 +163,7 @@ float amplitudeAdjustmentsITouchTransmit[] = {1.0, 1.0, 1.0, 1.0}; // Arbitrary 
             for (int i = 0; i < kNumberOfTransmitFrequencies; i++)
             {
                 double freq = frequenciesToSend[i];
-                sum += sin(time * freq) * amplitudeAdjustmentsITouchTransmit[i];
+                sum += sin(time * freq) * amplitudeAdjustments[i];
                 divisor += freq > 1 ? 1 : 0;
             }
             

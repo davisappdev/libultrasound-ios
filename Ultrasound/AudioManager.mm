@@ -276,8 +276,9 @@ void printFFT(int *fftData, int len)
         int dIndexDown = (i == 0) ? (round([requestedFrequencies[i+1] intValue] / kRatio) - index) : (index - round([requestedFrequencies[i-1] intValue] / kRatio));
 //        printf("%d\n----------\n", dIndex);
         
-        int upAmt = ceilf(dIndexUp / 2.0f) - 1;
-        int downAmt = ceilf(dIndexDown / 2.0f) - 1;
+        int upAmt = MAX(ceilf(dIndexUp / 4.0f) - 1, 2);
+        int downAmt = MAX(ceilf(dIndexDown / 4.0f) - 1, 2);
+        
         
         double val = 0;
         for(int j = index; j <= index + upAmt; j++)
