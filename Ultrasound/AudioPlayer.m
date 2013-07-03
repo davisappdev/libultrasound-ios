@@ -8,6 +8,9 @@
 
 #import "AudioPlayer.h"
 
+#define kFFTInterval 0.02
+#define kTransmitInterval 0.6
+
 @interface AudioPlayer ()
 {
     float *frequenciesToSend;
@@ -18,23 +21,50 @@
 @property (nonatomic) double frequency;
 @property (nonatomic) double t;
 @property (nonatomic) BOOL isPlaying;
-@property (nonatomic, strong) NSTimer *timer;
+@property (nonatomic, strong) NSTimer *FFTTimer;
+@property (nonatomic, strong) NSTimer *transmitTimer;
+@property BOOL frequenciesChanging;
+
+@property (nonatomic) int sequenceIndex;
+
+@property (nonatomic) BOOL isTransmittingDeliminator;
+
+@property (nonatomic) NSMutableArray *receivedPacketData;
+
+@property (nonatomic) BOOL recentlyDeliminated;
+@property (nonatomic) BOOL hasHeardPacketDeliminator;
 @end
 
 @implementation AudioPlayer
 
+
+- (void) transmitPacketDeliminatorWithCallback:(void (^)(void))callback
+{
+    self.isTransmittingDeliminator = YES;
+    for(int i = 0; i < kNumberOfTransmitFrequencies; i++)
+    {
+        frequenciesToSend[i] = 0;
+    }
+    
+    __weak AudioPlayer *weakSelf = self;
+    double delayInSeconds = 1.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        weakSelf.isTransmittingDeliminator = NO;
+        if(callback)
+        {
+            callback();
+        }
+    });
+}
+
 - (void) setDataToTransmit: (int) numberToSend
 {
+    self.frequenciesChanging = YES;
     NSArray *dataToSend = [self convertByteToBoolData:numberToSend];
     NSArray *frequencies = [self frequenciesUsedForTransmitting];
     NSLog(@"%@", dataToSend);
-   
-    if (frequenciesToSend)
-    {
-        free(frequenciesToSend);
-    }
     
-    frequenciesToSend = malloc(sizeof(float) * kNumberOfTransmitFrequencies);
     for (int i = 0; i < dataToSend.count; i++)
     {
         if ([dataToSend[i] boolValue])
@@ -47,6 +77,35 @@
             frequenciesToSend[i] = 0.0f;
         }
     }
+    self.frequenciesChanging = NO;
+}
+
+- (void) transmitSequence:(NSArray *)sequence
+{
+    __weak AudioPlayer *weakSelf = self;
+    [self transmitPacketDeliminatorWithCallback:^{
+        weakSelf.sequenceIndex = 0;
+        weakSelf.transmitTimer = [NSTimer timerWithTimeInterval:kTransmitInterval target:weakSelf selector:@selector(updateTransmitSequence:) userInfo:sequence repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:weakSelf.transmitTimer forMode:NSRunLoopCommonModes];
+        
+        [weakSelf updateTransmitSequence:weakSelf.transmitTimer];
+    }];
+}
+
+- (void) updateTransmitSequence:(NSTimer *)timer
+{
+    NSArray *seq = timer.userInfo;
+    if(self.sequenceIndex >= seq.count)
+    {
+        [self.transmitTimer invalidate];
+        [self transmitPacketDeliminatorWithCallback:nil];
+        return;
+    }
+    
+    int currentData = [seq[self.sequenceIndex] intValue];
+    [self setDataToTransmit:currentData];
+    
+    self.sequenceIndex++;
 }
 
 - (id) init
@@ -64,6 +123,9 @@
         {
             amplitudeAdjustments = amplitudeAdjustmentsIPadTransmit;
         }
+        
+        frequenciesToSend = malloc(sizeof(float) * kNumberOfTransmitFrequencies);
+        self.receivedPacketData = [[NSMutableArray alloc] init];
     }
     
     return self;
@@ -74,17 +136,33 @@
 {
     NSArray *frequenciesToCheck = [self frequenciesUsedForTransmitting];
     NSArray *receivedData = [self.audio fourier:frequenciesToCheck];
-    
-    
-    if(![self isDataAllZero:receivedData])
+    if(receivedData == nil && !self.recentlyDeliminated) // Deliminator was detected
     {
-        Byte byte = [self convertBoolDataToByte:receivedData];
-        [self.delegate audioReceivedDataUpdate:(int)byte];
-        printf("%i\n\n", (int)byte);
+        // Print out collected packet
+        for(int i = 0; i < self.receivedPacketData.count; i++)
+        {
+            printf("%d,%d\n", i, [self.receivedPacketData[i] intValue]);
+        }
+        
+        [self.receivedPacketData removeAllObjects];
+        
+        self.recentlyDeliminated = YES;
+        self.hasHeardPacketDeliminator = NO;
+        
+        return;
     }
-    else
+    else if(receivedData != nil && self.recentlyDeliminated)
     {
-        [self.delegate audioReceivedDataUpdate:0];
+        self.hasHeardPacketDeliminator = YES;
+    }
+    
+    if(self.hasHeardPacketDeliminator)
+    {
+        int byte = (int)[self convertBoolDataToByte:receivedData];
+        [self.delegate audioReceivedDataUpdate:byte];
+        [self.receivedPacketData addObject:@(byte)];
+        
+        self.recentlyDeliminated = NO;
     }
     
 }
@@ -141,7 +219,7 @@ float *amplitudeAdjustments; // Set at runtime for specific device;
     {
         for (UInt32 frame = 0; frame < numberOfFrames; frame++)
         {
-            if(frequenciesToSend == NULL)
+            if(frequenciesToSend == NULL || self.frequenciesChanging)
             {
                 data[frame] = 0;
                 continue;
@@ -152,19 +230,29 @@ float *amplitudeAdjustments; // Set at runtime for specific device;
             self.t += 1.0 / sampleRate;
             double time = self.t * 2 * M_PI;
             
+            if(self.isTransmittingDeliminator)
+            {
+                data[frame] = sin(time * kPacketDeliminatorFrequency);
+                continue;
+            }
+            
             
             /*data[frame] = sin(time * 587.33);
             data[frame] += sin(time * 880);*/
 
 
-            
-            
             float divisor = 0;
             for (int i = 0; i < kNumberOfTransmitFrequencies; i++)
             {
                 double freq = frequenciesToSend[i];
                 sum += sin(time * freq) * amplitudeAdjustments[i];
                 divisor += freq > 1 ? 1 : 0;
+            }
+            
+            if(divisor == 0)
+            {
+                data[frame] = 0;
+                continue;
             }
             
             sum /= divisor;
@@ -204,8 +292,9 @@ float *amplitudeAdjustments; // Set at runtime for specific device;
 {
     if(self.isReceiving)
     {
-        self.timer = [NSTimer timerWithTimeInterval:0.2 target:self selector:@selector(getTransmittedData) userInfo:nil repeats:YES];
-        [[NSRunLoop mainRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
+        [self.receivedPacketData removeAllObjects];
+        self.FFTTimer = [NSTimer timerWithTimeInterval:kFFTInterval target:self selector:@selector(getTransmittedData) userInfo:nil repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:self.FFTTimer forMode:NSRunLoopCommonModes];
     }
     else
     {
@@ -218,7 +307,7 @@ float *amplitudeAdjustments; // Set at runtime for specific device;
 
 - (void) stop
 {
-    [self.timer invalidate];
+    [self.FFTTimer invalidate];
     self.isPlaying = NO;
     
     [self.audio stopAudio];

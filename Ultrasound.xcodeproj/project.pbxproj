@@ -41,6 +41,8 @@
 		36B75111161693E900A6ED3B /* AudioManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 36B75110161693E900A6ED3B /* AudioManager.mm */; };
 		36B751131616941300A6ED3B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B751121616941300A6ED3B /* AudioToolbox.framework */; };
 		36C3017D1634966F00D44AE8 /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 36C3017C1634966F00D44AE8 /* AudioPlayer.m */; };
+		36CC7AEB1784A906004E0127 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36CC7AEA1784A906004E0127 /* QuartzCore.framework */; };
+		36CC7AEE1784E49E004E0127 /* Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 36CC7AED1784E49D004E0127 /* Processor.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +99,9 @@
 		36B751121616941300A6ED3B /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		36C3017B1634966F00D44AE8 /* AudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioPlayer.h; sourceTree = "<group>"; };
 		36C3017C1634966F00D44AE8 /* AudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioPlayer.m; sourceTree = "<group>"; };
+		36CC7AEA1784A906004E0127 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		36CC7AEC1784E49D004E0127 /* Processor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Processor.h; sourceTree = "<group>"; };
+		36CC7AED1784E49D004E0127 /* Processor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Processor.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +109,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36CC7AEB1784A906004E0127 /* QuartzCore.framework in Frameworks */,
 				36B751131616941300A6ED3B /* AudioToolbox.framework in Frameworks */,
 				36B750D2161693A700A6ED3B /* UIKit.framework in Frameworks */,
 				36B750D4161693A700A6ED3B /* Foundation.framework in Frameworks */,
@@ -173,6 +179,7 @@
 		36B750D0161693A700A6ED3B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				36CC7AEA1784A906004E0127 /* QuartzCore.framework */,
 				36B751121616941300A6ED3B /* AudioToolbox.framework */,
 				36B750D1161693A700A6ED3B /* UIKit.framework */,
 				36B750D3161693A700A6ED3B /* Foundation.framework */,
@@ -189,15 +196,17 @@
 				36B750EC161693A800A6ED3B /* MainStoryboard_iPad.storyboard */,
 				36B750EF161693A800A6ED3B /* ViewController.h */,
 				36B750F0161693A800A6ED3B /* ViewController.m */,
-				36B750D8161693A700A6ED3B /* Supporting Files */,
-				361B1A05165AF16200BC19CB /* FFT */,
-				36B7510F161693E900A6ED3B /* AudioManager.h */,
-				36B75110161693E900A6ED3B /* AudioManager.mm */,
 				36C3017B1634966F00D44AE8 /* AudioPlayer.h */,
 				36C3017C1634966F00D44AE8 /* AudioPlayer.m */,
+				36B7510F161693E900A6ED3B /* AudioManager.h */,
+				36B75110161693E900A6ED3B /* AudioManager.mm */,
 				3692BE9F165740B2002A8605 /* audio_helper.h */,
 				3692BEA71657414F002A8605 /* audio_helper.cpp */,
+				361B1A05165AF16200BC19CB /* FFT */,
+				36B750D8161693A700A6ED3B /* Supporting Files */,
 				3692BEB7165741F3002A8605 /* iPublicUtility */,
+				36CC7AEC1784E49D004E0127 /* Processor.h */,
+				36CC7AED1784E49D004E0127 /* Processor.m */,
 			);
 			path = Ultrasound;
 			sourceTree = "<group>";
@@ -360,6 +369,7 @@
 				361B19FA165AF09A00BC19CB /* FFTBufferManager.cpp in Sources */,
 				361B1A01165AF15100BC19CB /* rad2fft.c in Sources */,
 				361B1A03165AF15100BC19CB /* SpectrumAnalysis.cpp in Sources */,
+				36CC7AEE1784E49E004E0127 /* Processor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

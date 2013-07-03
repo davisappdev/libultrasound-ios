@@ -12,8 +12,6 @@
 @property (weak, nonatomic) IBOutlet UIStepper *stepper;
 @property (nonatomic, strong) AudioPlayer *audioPlayer;
 @property (nonatomic, weak) UIButton *button;
-@property (nonatomic) Byte byteToTransmit;
-@property (nonatomic, strong) NSTimer *transmitTimer;
 @end
 
 @implementation ViewController
@@ -27,7 +25,6 @@
     self.audioPlayer.isReceiving = YES;
     
     self.numberToSend.delegate = self;
-    self.byteToTransmit = 230;
     //[self.audioPlayer playFrequency:880 forTime:10.0];
     
 }
@@ -46,22 +43,24 @@
     [sender setTitleColor:[UIColor grayColor] forState:UIControlStateDisabled];
     [sender setAlpha:0.4];
     
-    self.button = sender;
-    
-    
     if(!self.audioPlayer.isReceiving)
     {
-        self.transmitTimer = [NSTimer timerWithTimeInterval:0.6 target:self selector:@selector(updateTransmission) userInfo:nil repeats:YES];
-        //[[NSRunLoop mainRunLoop] addTimer:self.transmitTimer forMode:NSRunLoopCommonModes];
+        NSMutableArray *seq = [NSMutableArray array];
+        NSString *text = @"FOGBADJIG"; // 5, 14, 
+        for(int i = 0; i < text.length; i++)
+        {
+            unichar c = [text characterAtIndex:i];
+            [seq addObject:@(c-'A')];
+        }
+        [self.audioPlayer transmitSequence:[seq copy]];
     }
     
+    self.button = sender;
 }
 
-- (void) updateTransmission
+- (IBAction)outputDelimPressed:(UIButton *)button
 {
-    [self.audioPlayer setDataToTransmit:self.byteToTransmit];
-    self.numberToSend.text = [NSString stringWithFormat:@"%i", (int)self.byteToTransmit];
-    self.byteToTransmit++;
+    [self.audioPlayer transmitPacketDeliminatorWithCallback:nil];
 }
 
 - (IBAction)stepperValueChanged:(UIStepper *)sender
@@ -92,8 +91,6 @@
 {
     [self.audioPlayer stop];
     
-    [self.transmitTimer invalidate];
-    self.byteToTransmit = 230;
     
     if([sender selectedSegmentIndex] == 0)
     {

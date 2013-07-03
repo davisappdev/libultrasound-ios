@@ -19,7 +19,7 @@
     CAStreamBasicDescription thruFormat;
     FFTBufferManager *fft;
     int32_t *fftData;
-
+    
 }
 
 const double kSampleRate = 44100;
@@ -47,8 +47,8 @@ OSStatus RenderTone(
     if(globalSelf.isReceiving)
     {
         AudioUnitRender(globalSelf->toneUnit, ioActionFlags, inTimeStamp, 1, inNumberFrames, ioData);
-    
-        SInt8 *data_ptr = (SInt8 *)(ioData->mBuffers[0].mData);        
+        
+        SInt8 *data_ptr = (SInt8 *)(ioData->mBuffers[0].mData);
         if (globalSelf->fft == NULL)
         {
             return noErr;
@@ -61,7 +61,7 @@ OSStatus RenderTone(
     else
     {
         Float32 *ptr = (Float32 *)(ioData->mBuffers[0].mData);
-
+        
         [globalSelf.delegate renderAudioIntoData:ptr withSampleRate:kSampleRate numberOfFrames:inNumberFrames];
     }
     //SilenceData(ioData);
@@ -77,30 +77,30 @@ void ToneInterruptionListener(void *inClientData, UInt32 inInterruptionState)
 
 int SetupRemoteIO (AudioUnit& inRemoteIOUnit, AURenderCallbackStruct inRenderProc, CAStreamBasicDescription& outFormat)
 {
-		// Open the output unit
-		AudioComponentDescription desc;
-		desc.componentType = kAudioUnitType_Output;
-		desc.componentSubType = kAudioUnitSubType_RemoteIO;
-		desc.componentManufacturer = kAudioUnitManufacturer_Apple;
-		desc.componentFlags = 0;
-		desc.componentFlagsMask = 0;
-		
-		AudioComponent comp = AudioComponentFindNext(NULL, &desc);
-		
-		AudioComponentInstanceNew(comp, &inRemoteIOUnit);
-        
-		UInt32 one = 1;
-		AudioUnitSetProperty(inRemoteIOUnit, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, 1, &one, sizeof(one));
-		AudioUnitSetProperty(inRemoteIOUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input, 0, &inRenderProc, sizeof(inRenderProc));
-		
-        //set our required format - Canonical AU format: LPCM non-interleaved 8.24 fixed point
-        outFormat.SetAUCanonical(2, false);
-        outFormat.mSampleRate = kSampleRate;
-        //AudioUnitSetProperty(inRemoteIOUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &outFormat, sizeof(outFormat));
-        AudioUnitSetProperty(inRemoteIOUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 1, &outFormat, sizeof(outFormat));
-
+    // Open the output unit
+    AudioComponentDescription desc;
+    desc.componentType = kAudioUnitType_Output;
+    desc.componentSubType = kAudioUnitSubType_RemoteIO;
+    desc.componentManufacturer = kAudioUnitManufacturer_Apple;
+    desc.componentFlags = 0;
+    desc.componentFlagsMask = 0;
     
-		AudioUnitInitialize(inRemoteIOUnit);
+    AudioComponent comp = AudioComponentFindNext(NULL, &desc);
+    
+    AudioComponentInstanceNew(comp, &inRemoteIOUnit);
+    
+    UInt32 one = 1;
+    AudioUnitSetProperty(inRemoteIOUnit, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, 1, &one, sizeof(one));
+    AudioUnitSetProperty(inRemoteIOUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input, 0, &inRenderProc, sizeof(inRenderProc));
+    
+    //set our required format - Canonical AU format: LPCM non-interleaved 8.24 fixed point
+    outFormat.SetAUCanonical(2, false);
+    outFormat.mSampleRate = kSampleRate;
+    //AudioUnitSetProperty(inRemoteIOUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &outFormat, sizeof(outFormat));
+    AudioUnitSetProperty(inRemoteIOUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 1, &outFormat, sizeof(outFormat));
+    
+    
+    AudioUnitInitialize(inRemoteIOUnit);
 	
 	return 0;
 }
@@ -207,8 +207,8 @@ void printFFT(int *fftData, int len)
     maxY = 1024;
     
     //printFFT(fftData, 1024);
-   
-
+    
+    
     NSMutableArray *storedFFTData = [NSMutableArray array];
     for (y = 0; y < maxY; y++)
     {
@@ -233,12 +233,6 @@ void printFFT(int *fftData, int len)
         
         //float frequency = y * kRatio;
         [storedFFTData addObject:@(interpVal)];
-        
-        
-        
-        //drawBuffers[0][y] = (interpVal * 120);
-        //printf("(%f, %f)  ", , interpVal * 120);
-        //printf("(%i, %g)  ", y, interpVal);
     }
     [storedFFTData removeLastObject];
     
@@ -247,34 +241,50 @@ void printFFT(int *fftData, int len)
     
     int minIndex = round([requestedFrequencies[0] intValue] / kRatio) - 20;
     int maxIndex = round([[requestedFrequencies lastObject] intValue] / kRatio) + 20;
+    int delimIndex = round(kPacketDeliminatorFrequency / kRatio);
     
-    for(int i = minIndex; i <= maxIndex; i++)
+    /*for(int i = minIndex; i <= maxIndex; i++)
     {
         printf("%d,%f\n", i - minIndex, [storedFFTData[i] floatValue]);
+    }*/
+    
+    double delimValue = 0;
+    int delimUp = 3;
+    int delimDown = 3;
+    for(int j = delimIndex; j <= delimIndex + delimUp; j++)
+    {
+        double a = [storedFFTData[j] floatValue];
+        delimValue = MAX(delimValue, a);
     }
+    for(int j = delimIndex; j >= delimIndex - delimDown; j--)
+    {
+        double a = [storedFFTData[j] floatValue];
+        delimValue = MAX(delimValue, a);
+    }
+    
+    
     
     double mean = [self meanOfArray:storedFFTData startIndex:minIndex endIndex:maxIndex];
     double standardDeviation = [self standardDeviation:storedFFTData startIndex:minIndex endIndex:maxIndex mean:mean];
     double maxValue = [self maxValueForArray:storedFFTData startIndex:minIndex endIndex:maxIndex];
-    double cutoffValue = maxValue - (standardDeviation * 2);
+    double cutoffValue = maxValue - (standardDeviation * 3);
     
-    printf("Mean: %f\n", mean);
+    /*printf("Mean: %f\n", mean);
     printf("STD: %f\n", standardDeviation);
-    printf("Cutoff Value: %f\n", cutoffValue);
+    printf("Cutoff Value: %f\n", cutoffValue);*/
     
     
     NSMutableArray *outputFrequencies = [NSMutableArray array];
-   
     
+    BOOL allBitsOff = YES;
     for(int i = 0; i < requestedFrequencies.count; i++)
     {
         int index = round([requestedFrequencies[i] intValue] / kRatio);
-        NSLog(@"Index: %i", index-minIndex);
+        //NSLog(@"Index: %i", index-minIndex);
         
         // Calculate the difference neighboring frequency indices.
         int dIndexUp = (i == requestedFrequencies.count-1) ? (index - round([requestedFrequencies[i-1] intValue] / kRatio)) : (round([requestedFrequencies[i+1] intValue] / kRatio) - index);
         int dIndexDown = (i == 0) ? (round([requestedFrequencies[i+1] intValue] / kRatio) - index) : (index - round([requestedFrequencies[i-1] intValue] / kRatio));
-//        printf("%d\n----------\n", dIndex);
         
         int upAmt = MAX(ceilf(dIndexUp / 4.0f) - 1, 2);
         int downAmt = MAX(ceilf(dIndexDown / 4.0f) - 1, 2);
@@ -293,20 +303,17 @@ void printFFT(int *fftData, int len)
         }
         
         
-        //val += val * i * kAmplitudeAdjust;
         
-        printf("%g  ", val);
-        //printf("%g  ", ratio);
+//        printf("%g  ", val);
         
         if(standardDeviation < 0.5)
         {
             [outputFrequencies addObject:@(NO)];
         }
-        //else if(val >= minimumValue)
         else if(val > cutoffValue)
         {
-            //printf("Value: %f\n", MAX(MAX(val1, val2), MAX(val2, val3)));
             [outputFrequencies addObject:@(YES)];
+            allBitsOff = NO;
         }
         else
         {
@@ -314,8 +321,14 @@ void printFFT(int *fftData, int len)
         }
     }
     
-    printf("\n");
-
+    if(allBitsOff && delimValue > 15.0 && fabs(delimValue-120) > DBL_EPSILON)
+    {
+        printf("DELIMINATOR DETECTED\n");
+        return nil; // Returning nil indicates that the deliminator was detected
+    }
+    
+    //printf("\n");
+    
     return [outputFrequencies copy];
 }
 
@@ -369,9 +382,9 @@ void printFFT(int *fftData, int len)
     for (int i = start; i <= end; i++) {
         sum += [array[i] doubleValue];
     }
-   
+    
     mean = sum / (end - start + 1);
-   
+    
     double totalDiff = 0.0;
     for (int i = start; i <= end; i++)
     {
@@ -382,7 +395,7 @@ void printFFT(int *fftData, int len)
     
     double standarDeviation = sqrt(totalDiff / (end - start + 1));
     return standarDeviation;
-
+    
 }
 
 @end

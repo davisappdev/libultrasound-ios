@@ -10,6 +10,7 @@
 #define kLowerFrequencyBound 18000
 #define kUpperFrequencyBound 20500
 #define kNumberOfTransmitFrequencies 4
+#define kPacketDeliminatorFrequency 17000
 
 
 @protocol AudioManagerDelegate <NSObject>
