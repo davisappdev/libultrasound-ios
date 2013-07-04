@@ -7,26 +7,28 @@
 //
 
 #import "UltrasoundTests.h"
+#import "Processor.h"
 
 @implementation UltrasoundTests
 
 - (void)setUp
 {
     [super setUp];
-    
-    // Set-up code here.
 }
 
 - (void)tearDown
-{
-    // Tear-down code here.
-    
+{    
     [super tearDown];
 }
 
-- (void)testExample
+
+- (void) testStringEncoding
 {
-    STFail(@"Unit tests are not implemented yet in UltrasoundTests");
+    NSString *string = @"FOGBADJIG";
+    NSArray *data = [Processor encodeString:string];
+    NSString *result = [Processor decodeData:data];
+    
+    STAssertEqualObjects(string, result, @"Original string and encoded then decoded string should be equal");
 }
 
 @end

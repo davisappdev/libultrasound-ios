@@ -7,6 +7,7 @@
 //
 
 #import "AudioPlayer.h"
+#import "Processor.h"
 
 #define kFFTInterval 0.02
 #define kTransmitInterval 0.6
@@ -143,6 +144,11 @@
         {
             printf("%d,%d\n", i, [self.receivedPacketData[i] intValue]);
         }
+        
+        NSArray *result = [Processor processPacketData:self.receivedPacketData];
+        NSString *receivedText = [Processor decodeData:result];
+                   
+        NSLog(@"%@", receivedText);
         
         [self.receivedPacketData removeAllObjects];
         

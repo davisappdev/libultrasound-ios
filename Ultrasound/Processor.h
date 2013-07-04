@@ -10,6 +10,11 @@
 
 @interface Processor : NSObject
 
-- (NSArray *) processPacketData:(NSArray *)packetData;
++ (NSArray *) processPacketData:(NSArray *)packetData;
+
+
+// Fun debug encoding
++ (NSArray *) encodeString:(NSString *)string;
++ (NSString *) decodeData:(NSArray *)data;
 
 @end
