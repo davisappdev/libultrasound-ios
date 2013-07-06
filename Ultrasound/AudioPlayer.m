@@ -138,17 +138,20 @@
     NSArray *frequenciesToCheck = [self frequenciesUsedForTransmitting];
     NSArray *receivedData = [self.audio fourier:frequenciesToCheck];
     if(receivedData == nil && !self.recentlyDelimited) // Delimiter was detected
-    {
+    { 
         // Print out collected packet
         for(int i = 0; i < self.receivedPacketData.count; i++)
         {
             printf("%d,%d\n", i, [self.receivedPacketData[i] intValue]);
         }
         
-        NSArray *result = [Processor processPacketData:self.receivedPacketData];
-        NSString *receivedText = [Processor decodeData:result];
-                   
-        NSLog(@"%@", receivedText);
+        if(self.receivedPacketData.count > 1)
+        {
+            NSArray *result = [Processor processPacketData:self.receivedPacketData];
+            NSString *receivedText = [Processor decodeData:result];
+                       
+            NSLog(@"%@", receivedText);
+        }
         
         [self.receivedPacketData removeAllObjects];
         

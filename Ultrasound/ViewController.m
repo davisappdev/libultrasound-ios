@@ -46,7 +46,8 @@
     if(!self.audioPlayer.isReceiving)
     {
         NSMutableArray *seq = [NSMutableArray array];
-        NSString *text = @"FOGBADJIG"; // 5, 14, 
+        NSString *text = @"FOGBADJIGGIJDABGOFFOGBADJIGGIJDABGOF"; // 5, 14,
+        //                 FGGBADBIGGIBDABGGFFGGBADBAGGIBDABGGF
         for(int i = 0; i < text.length; i++)
         {
             unichar c = [text characterAtIndex:i];

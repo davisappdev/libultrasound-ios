@@ -7,14 +7,31 @@
 //
 
 #import "Processor.h"
-#define kNumberLength 25.0
+#import "ProcessAlgoMain.h"
+//#define kNumberLength 25.0
+
 @implementation Processor
+
++ (void) incrementCountForKey:(id)key inDictionary:(NSMutableDictionary *)dict
+{
+    NSNumber *count = [dict objectForKey:key];
+    if(count)
+    {
+        [dict setObject:@(count.intValue + 1) forKey:key];
+    }
+    else
+    {
+        [dict setObject:@(1) forKey:key];
+    }
+}
+
 
 + (NSArray *) processPacketData:(NSArray *)packetData
 {
     NSMutableArray *result = [NSMutableArray array];
-    
+    double kNumberLength = [ProcessAlgoMain getDistanceSpacing:packetData];
     int numSections = ceil(packetData.count / kNumberLength);
+    
     for(int n = 0; n < numSections; n++)
     {
         NSMutableDictionary *values = [NSMutableDictionary dictionary];
@@ -22,19 +39,13 @@
         {
             if(i >= packetData.count)
             {
+                // Use -1 to indicate accessing the array out of bounds.. use this to detect stray data at the end of the array
+                [self incrementCountForKey:@(-1) inDictionary:values];
                 continue;
             }
             
             NSNumber *value = packetData[i];
-            NSNumber *count = [values objectForKey:value];
-            if(count)
-            {
-                [values setObject:@(count.intValue + 1) forKey:value];
-            }
-            else
-            {
-                [values setObject:@(1) forKey:value];
-            }
+            [self incrementCountForKey:value inDictionary:values];
         }
         
         
@@ -50,7 +61,10 @@
             }
         }
         
-        [result addObject:@(mode)];
+        if(mode !=-1)
+        {
+            [result addObject:@(mode)];
+        }
     }
     
     return [result copy];

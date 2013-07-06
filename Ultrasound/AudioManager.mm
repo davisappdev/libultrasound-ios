@@ -303,8 +303,10 @@ void printFFT(int *fftData, int len)
         }
         
         
-        
-//        printf("%g  ", val);
+        if(i == 3)
+        {
+        printf("%g\n", val);
+        }
         
         if(standardDeviation < 0.5)
         {

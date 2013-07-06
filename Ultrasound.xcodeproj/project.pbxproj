@@ -13,6 +13,11 @@
 		361B1A02165AF15100BC19CB /* rad2fft.c in Sources */ = {isa = PBXBuildFile; fileRef = 361B19FE165AF15100BC19CB /* rad2fft.c */; };
 		361B1A03165AF15100BC19CB /* SpectrumAnalysis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 361B1A00165AF15100BC19CB /* SpectrumAnalysis.cpp */; };
 		361B1A04165AF15100BC19CB /* SpectrumAnalysis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 361B1A00165AF15100BC19CB /* SpectrumAnalysis.cpp */; };
+		36791C1C178792BC002681B7 /* ProcessAlgoMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 36791C1B178792BC002681B7 /* ProcessAlgoMain.m */; };
+		36791C2117879361002681B7 /* ProcessingFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 36791C1E17879361002681B7 /* ProcessingFunctions.m */; };
+		36791C2217879361002681B7 /* ProcessingFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 36791C1E17879361002681B7 /* ProcessingFunctions.m */; };
+		36791C2317879361002681B7 /* Clump.m in Sources */ = {isa = PBXBuildFile; fileRef = 36791C2017879361002681B7 /* Clump.m */; };
+		36791C2417879361002681B7 /* Clump.m in Sources */ = {isa = PBXBuildFile; fileRef = 36791C2017879361002681B7 /* Clump.m */; };
 		3692BEA81657414F002A8605 /* audio_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3692BEA71657414F002A8605 /* audio_helper.cpp */; };
 		3692BEA91657414F002A8605 /* audio_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3692BEA71657414F002A8605 /* audio_helper.cpp */; };
 		3692BEB1165741E9002A8605 /* CADebugMacros.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3692BEAB165741E9002A8605 /* CADebugMacros.cpp */; };
@@ -62,6 +67,12 @@
 		361B19FE165AF15100BC19CB /* rad2fft.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rad2fft.c; sourceTree = "<group>"; };
 		361B19FF165AF15100BC19CB /* SpectrumAnalysis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpectrumAnalysis.h; sourceTree = "<group>"; };
 		361B1A00165AF15100BC19CB /* SpectrumAnalysis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpectrumAnalysis.cpp; sourceTree = "<group>"; };
+		36791C1A178792BC002681B7 /* ProcessAlgoMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProcessAlgoMain.h; sourceTree = "<group>"; };
+		36791C1B178792BC002681B7 /* ProcessAlgoMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProcessAlgoMain.m; sourceTree = "<group>"; };
+		36791C1D17879361002681B7 /* ProcessingFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProcessingFunctions.h; sourceTree = "<group>"; };
+		36791C1E17879361002681B7 /* ProcessingFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProcessingFunctions.m; sourceTree = "<group>"; };
+		36791C1F17879361002681B7 /* Clump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Clump.h; sourceTree = "<group>"; };
+		36791C2017879361002681B7 /* Clump.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Clump.m; sourceTree = "<group>"; };
 		3692BE9F165740B2002A8605 /* audio_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_helper.h; sourceTree = "<group>"; };
 		3692BEA71657414F002A8605 /* audio_helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = audio_helper.cpp; sourceTree = "<group>"; };
 		3692BEAA165741E9002A8605 /* CADebugMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CADebugMacros.h; sourceTree = "<group>"; };
@@ -143,6 +154,19 @@
 			name = FFT;
 			sourceTree = "<group>";
 		};
+		36791C19178792A3002681B7 /* ProcessAlgo */ = {
+			isa = PBXGroup;
+			children = (
+				36791C1D17879361002681B7 /* ProcessingFunctions.h */,
+				36791C1E17879361002681B7 /* ProcessingFunctions.m */,
+				36791C1F17879361002681B7 /* Clump.h */,
+				36791C2017879361002681B7 /* Clump.m */,
+				36791C1A178792BC002681B7 /* ProcessAlgoMain.h */,
+				36791C1B178792BC002681B7 /* ProcessAlgoMain.m */,
+			);
+			name = ProcessAlgo;
+			sourceTree = "<group>";
+		};
 		3692BEB7165741F3002A8605 /* iPublicUtility */ = {
 			isa = PBXGroup;
 			children = (
@@ -192,6 +216,7 @@
 		36B750D7161693A700A6ED3B /* Ultrasound */ = {
 			isa = PBXGroup;
 			children = (
+				36791C19178792A3002681B7 /* ProcessAlgo */,
 				36B750E9161693A800A6ED3B /* MainStoryboard_iPhone.storyboard */,
 				36B750EC161693A800A6ED3B /* MainStoryboard_iPad.storyboard */,
 				36B750EF161693A800A6ED3B /* ViewController.h */,
@@ -370,6 +395,9 @@
 				361B1A01165AF15100BC19CB /* rad2fft.c in Sources */,
 				361B1A03165AF15100BC19CB /* SpectrumAnalysis.cpp in Sources */,
 				36CC7AEE1784E49E004E0127 /* Processor.m in Sources */,
+				36791C1C178792BC002681B7 /* ProcessAlgoMain.m in Sources */,
+				36791C2117879361002681B7 /* ProcessingFunctions.m in Sources */,
+				36791C2317879361002681B7 /* Clump.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -385,6 +413,8 @@
 				361B19FB165AF09A00BC19CB /* FFTBufferManager.cpp in Sources */,
 				361B1A02165AF15100BC19CB /* rad2fft.c in Sources */,
 				361B1A04165AF15100BC19CB /* SpectrumAnalysis.cpp in Sources */,
+				36791C2217879361002681B7 /* ProcessingFunctions.m in Sources */,
+				36791C2417879361002681B7 /* Clump.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
