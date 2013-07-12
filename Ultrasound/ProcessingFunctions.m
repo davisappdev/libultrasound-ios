@@ -11,6 +11,7 @@
 #import "ProcessingFunctions.h"
 #import "Clump.h"
 
+
 void printArrayWithIndices(NSArray *array)
 {
     for(int i = 0; i < array.count; i++)
@@ -45,7 +46,7 @@ NSArray *differentiate(NSArray *data, int accuracy)
         if(i <= accuracy-1)
         {
             leftVal = [data[i] doubleValue];
-            rightVal = [data[i + accuracy] doubleValue];
+            rightVal = [data[MIN(i + accuracy, data.count-1)] doubleValue];
             dx = accuracy;
         }
         else if(i >= data.count - accuracy)
@@ -179,10 +180,13 @@ NSArray *findMidpointsOfClumps(NSArray *data)
 
 NSArray *findDistances(NSArray *data)
 {
+    if(data.count == 0 || data == nil) return nil;
+    
     NSMutableArray *diffArray = [NSMutableArray arrayWithCapacity:data.count];
+    [diffArray addObject:data[0]];
     for (int i = 0; i < data.count; i++)
     {
-        if (i + 1 < data.count)
+        if (i < data.count - 1)
         {
             int diff = [data[i + 1] intValue] - [data[i] intValue];
             [diffArray addObject:@(diff)];
@@ -231,3 +235,4 @@ void printArray(NSArray *data)
     }
     printf("\n");
 }
+

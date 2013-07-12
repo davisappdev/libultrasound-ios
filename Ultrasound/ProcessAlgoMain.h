@@ -10,6 +10,6 @@
 
 @interface ProcessAlgoMain : NSObject
 
-+ (double) getDistanceSpacing:(NSArray *) packetData;
++ (float) getDistanceSpacingFallback:(NSArray *) packetData andDistancesIntoArray:(NSArray **)distances;
 
 @end

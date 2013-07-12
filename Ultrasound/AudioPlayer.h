@@ -5,6 +5,8 @@
 @protocol AudioPlayerDelegate <NSObject>
 
 - (void) audioReceivedDataUpdate:(int)data;
+- (void) audioFinishedTransmittingSequence;
+- (void) audioReceivedText:(NSString *) text;
 
 @end
 

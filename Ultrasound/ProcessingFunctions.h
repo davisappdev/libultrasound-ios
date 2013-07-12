@@ -11,6 +11,7 @@
 #define kProcessingLowPassFilterConstant 0.5
 #define kProcessingSecondDerivCutoff 4.0
 
+
 NSArray *multiplyArrayByConstant(NSArray *data, double k);
 int getMinGap(NSArray *data);
 NSArray *differentiate(NSArray *data, int accuracy);
@@ -22,3 +23,5 @@ NSArray *mergeGaps(NSArray *data, int maxWidth);
 NSArray *findMidpointsOfClumps(NSArray *data);
 NSArray *findDistances(NSArray *data);
 NSArray *clumpData(NSArray *data, int tolerance);
+
+

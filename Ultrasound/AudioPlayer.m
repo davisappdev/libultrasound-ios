@@ -99,7 +99,9 @@
     if(self.sequenceIndex >= seq.count)
     {
         [self.transmitTimer invalidate];
-        [self transmitPacketDelimiterWithCallback:nil];
+        [self transmitPacketDelimiterWithCallback:^{
+            [self.delegate audioFinishedTransmittingSequence];
+        }];
         return;
     }
     
@@ -138,19 +140,23 @@
     NSArray *frequenciesToCheck = [self frequenciesUsedForTransmitting];
     NSArray *receivedData = [self.audio fourier:frequenciesToCheck];
     if(receivedData == nil && !self.recentlyDelimited) // Delimiter was detected
-    { 
+    {
+        NSLog(@"Processing packet");
+        
         // Print out collected packet
         for(int i = 0; i < self.receivedPacketData.count; i++)
         {
             printf("%d,%d\n", i, [self.receivedPacketData[i] intValue]);
         }
         
-        if(self.receivedPacketData.count > 1)
+        if(self.receivedPacketData.count > 10)
         {
             NSArray *result = [Processor processPacketData:self.receivedPacketData];
+            NSLog(@"Received nibble sequence: %@", result);
             NSString *receivedText = [Processor decodeData:result];
                        
             NSLog(@"%@", receivedText);
+            [self.delegate audioReceivedText:receivedText];
         }
         
         [self.receivedPacketData removeAllObjects];
@@ -163,6 +169,7 @@
     else if(receivedData != nil && self.recentlyDelimited)
     {
         self.hasHeardPacketDelimiter = YES;
+        NSLog(@"Staring packet");
     }
     
     if(self.hasHeardPacketDelimiter)
@@ -170,6 +177,8 @@
         int byte = (int)[self convertBoolDataToByte:receivedData];
         [self.delegate audioReceivedDataUpdate:byte];
         [self.receivedPacketData addObject:@(byte)];
+        
+//        NSLog(@"Adding byte to packet array");
         
         self.recentlyDelimited = NO;
     }
@@ -206,20 +215,11 @@
 
 - (NSArray *) frequenciesUsedForTransmitting
 {
-    /*NSMutableArray *freqs = [NSMutableArray array];
-    int step = (kUpperFrequencyBound-kLowerFrequencyBound) / kNumberOfTransmitFrequencies;
-    for(int f = kLowerFrequencyBound; f <= kUpperFrequencyBound - step; f += step)
-    {
-        [freqs addObject:@(f)];
-    }
-    
-    return [freqs copy];*/
-    
-    return @[@18000, @18150, @18600, @19500];
+    return kTransmitFrequencies;
 }
 
 
-float amplitudeAdjustmentsIPadTransmit[] = {4.0, 4.0, 10.0, 15.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
+float amplitudeAdjustmentsIPadTransmit[] = {4.0, 4.0, 10.0, 20.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
 float amplitudeAdjustmentsITouchTransmit[] = {1.0, 1.0, 1.0, 1.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
 float *amplitudeAdjustments; // Set at runtime for specific device;
 - (void) renderAudioIntoData:(Float32 *)data withSampleRate:(double)sampleRate numberOfFrames:(int)numberOfFrames

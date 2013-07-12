@@ -10,36 +10,35 @@
 #import "ProcessingFunctions.h"
 #import "Clump.h"
 
+
 @implementation ProcessAlgoMain
-+ (double) getDistanceSpacing:(NSArray *) packetData
++ (float) getDistanceSpacingFallback:(NSArray *) packetData andDistancesIntoArray:(NSArray **)distances
 {
-    
     NSArray *firstDerivative = differentiate(packetData, 4);
-    NSArray *secondDerivative = differentiate(firstDerivative, 4);
+    
+    NSArray *cutoffFirstDeriv = cutoffData(multiplyArrayByConstant(firstDerivative, 10), 0.5);
+    printArrayWithIndices(cutoffFirstDeriv);
+    
+    
 
-    // printf("1st derivative:\n");
-    //printArray(firstDerivative);
-
-    NSArray *lowPassedSecondDeriv = doLowPass(multiplyArrayByConstant(secondDerivative, 60.0), kProcessingLowPassFilterConstant);
-    lowPassedSecondDeriv = cutoffData(lowPassedSecondDeriv, 5);
-    //printArray(lowPassedSecondDeriv);
-
-
-    // Now we want to find clumps in lowPassedSecondDeriv, and mush them together (see graph)
-
-    NSArray *mergedLowPassedSecondDeriv = mergeGaps(lowPassedSecondDeriv, 8);
+    NSArray *mergedDeriv = mergeGaps(cutoffFirstDeriv, 4);
     //        printArray(mergedLowPassedSecondDeriv);
 
-    NSArray *clumpIndices = findMidpointsOfClumps(mergedLowPassedSecondDeriv);
+    NSArray *clumpIndices = findMidpointsOfClumps(mergedDeriv);
     printArray(clumpIndices);
-    NSArray *distances = findDistances(clumpIndices);
-    distances = [distances sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+    *distances = findDistances(clumpIndices);
+    
+
+    NSArray *distanceClumps = clumpData(*distances, 12);
+    distanceClumps = [distanceClumps sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        double val1 = [obj1 average];
+        double val2 = [obj2 average];
         
-        if ([obj2 intValue] > [obj1 intValue])
+        if (val2 > val1)
         {
             return NSOrderedAscending;
         }
-        else if([obj2 intValue] < [obj1 intValue])
+        else if(val2 < val1)
         {
             return NSOrderedDescending;
         }
@@ -47,17 +46,30 @@
         {
             return NSOrderedSame;
         }
-        
     }];
 
-    printArray(distances);
-
-    NSArray *distanceClumps = clumpData(distances, 8);
 
     printArray(distanceClumps);
+    
+    if(distanceClumps.count == 0)
+    {
+        return 30;
+    }
 
-    float distance = [distanceClumps[0] smallest];
-    printf("%f", distance);
-    return distance;
+    float fallbackDistance = [distanceClumps[0] average];
+    
+    // Add on the last distance value
+    int lastClumpIndex = [[clumpIndices lastObject] intValue];
+    int lastDataIndex = packetData.count - 1;
+    int lastDistance = lastDataIndex - lastClumpIndex;
+    if(lastDistance >= fallbackDistance * 0.5)
+    {
+        *distances = [*distances arrayByAddingObject:@(lastDistance)];
+    }
+    
+    printArray(*distances);
+    
+    //printf("%f", distance);
+    return fallbackDistance;
 }
 @end

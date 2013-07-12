@@ -7,11 +7,14 @@
 //
 
 #import "ViewController.h"
+#import "Processor.h"
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UIStepper *stepper;
 @property (nonatomic, strong) AudioPlayer *audioPlayer;
 @property (nonatomic, weak) UIButton *button;
+
+@property (nonatomic, strong) UIPopoverController *pop;
 @end
 
 @implementation ViewController
@@ -25,15 +28,37 @@
     self.audioPlayer.isReceiving = YES;
     
     self.numberToSend.delegate = self;
+    self.textToSendField.delegate = self;
     //[self.audioPlayer playFrequency:880 forTime:10.0];
     
+
 }
 
-- (void)didReceiveMemoryWarning
+
+- (IBAction)cameraPressed:(id)sender
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    CardIOPaymentViewController *scanViewController = [[CardIOPaymentViewController alloc] initWithPaymentDelegate:self];
+    scanViewController.appToken = @"0a3e3723bfde4ff683d03cd1520aabcc"; // get your app token from the card.io website
+    [self presentViewController:scanViewController animated:YES completion:nil];
 }
+
+- (void) userDidCancelPaymentViewController:(CardIOPaymentViewController *)scanViewController
+{
+    NSLog(@"User canceled payment info");
+    // Handle user cancellation here...
+    [scanViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void) userDidProvideCreditCardInfo:(CardIOCreditCardInfo *)info inPaymentViewController:(CardIOPaymentViewController *)scanViewController
+{
+    // The full card number is available as info.cardNumber, but don't log that!
+    NSLog(@"Received card info. Number: %@, type:%i", info.cardNumber, info.cardType);
+    // Use the card info...
+    [scanViewController dismissViewControllerAnimated:YES completion:nil];
+    self.textToSendField.text = [NSString stringWithFormat:@"%@", info.cardNumber];
+}
+
+
 
 - (IBAction)startPressed:(id)sender
 {
@@ -45,23 +70,13 @@
     
     if(!self.audioPlayer.isReceiving)
     {
-        NSMutableArray *seq = [NSMutableArray array];
-        NSString *text = @"FOGBADJIGGIJDABGOFFOGBADJIGGIJDABGOF"; // 5, 14,
-        //                 FGGBADBIGGIBDABGGFFGGBADBAGGIBDABGGF
-        for(int i = 0; i < text.length; i++)
-        {
-            unichar c = [text characterAtIndex:i];
-            [seq addObject:@(c-'A')];
-        }
-        [self.audioPlayer transmitSequence:[seq copy]];
+        //                 FOGBADJIGGIJDABGOFFOGBADJIGGIJDABGOF
+        NSArray *nibbleSequence = [Processor encodeString:self.textToSendField.text];
+        NSLog(@"Transmitted nibble sequence: %@", nibbleSequence);
+        [self.audioPlayer transmitSequence:nibbleSequence];
     }
     
     self.button = sender;
-}
-
-- (IBAction)outputDelimPressed:(UIButton *)button
-{
-    [self.audioPlayer transmitPacketDelimiterWithCallback:nil];
 }
 
 - (IBAction)stepperValueChanged:(UIStepper *)sender
@@ -84,8 +99,11 @@
 - (void) textFieldDidEndEditing:(UITextField *)textField
 {
     NSString *dataToSend = textField.text;
-    [self.audioPlayer setDataToTransmit:dataToSend.intValue];
-    self.stepper.value = dataToSend.doubleValue;
+    if(textField == self.numberToSend)
+    {
+        [self.audioPlayer setDataToTransmit:dataToSend.intValue];
+        self.stepper.value = dataToSend.doubleValue;
+    }
 }
 
 - (IBAction)modeChanged:(id)sender
@@ -113,6 +131,17 @@
 - (void) audioReceivedDataUpdate:(int)data
 {
     self.receivedData.text = [NSString stringWithFormat:@"%i", data];
+}
+
+- (void) audioReceivedText:(NSString *)text
+{
+    self.receivedText.text = text;
+}
+
+- (void) audioFinishedTransmittingSequence
+{
+    self.button.enabled = YES;
+    self.button.alpha = 1.0;
 }
 
 @end

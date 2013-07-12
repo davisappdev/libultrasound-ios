@@ -51,9 +51,18 @@
                                     <action selector="stepperValueChanged:" destination="zgm-uO-vMM" eventType="valueChanged" id="DU2-OC-rEs"/>
                                 </connections>
                             </stepper>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qde-NA-r6f">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Transmission Text" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ogy-n2-bCY">
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="received text" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C4Z-2J-teT">
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zEH-Fj-LZG">
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="Output Delim">
+                                <state key="normal" title="Camera">
                                     <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -61,20 +70,25 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="outputDelimPressed:" destination="zgm-uO-vMM" eventType="touchUpInside" id="dWZ-03-mOH"/>
+                                    <action selector="cameraPressed:" destination="zgm-uO-vMM" eventType="touchUpInside" id="7t3-Py-Geo"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Qde-NA-r6f" firstAttribute="top" secondItem="7Dd-QT-e3P" secondAttribute="top" constant="255" id="4D0-8h-jZ2"/>
+                            <constraint firstItem="btf-QS-Sxc" firstAttribute="top" secondItem="7Dd-QT-e3P" secondAttribute="top" constant="167" id="0pf-ks-pvp"/>
+                            <constraint firstItem="zEH-Fj-LZG" firstAttribute="centerX" secondItem="ogy-n2-bCY" secondAttribute="centerX" type="default" id="3Jj-Xc-AZe"/>
                             <constraint firstItem="rr1-hc-TDa" firstAttribute="centerX" secondItem="IIN-jB-kBT" secondAttribute="centerX" type="default" id="5rF-Fr-haJ"/>
-                            <constraint firstItem="Qde-NA-r6f" firstAttribute="centerX" secondItem="btf-QS-Sxc" secondAttribute="centerX" type="default" id="KZD-Ps-UXu"/>
+                            <constraint firstItem="C4Z-2J-teT" firstAttribute="top" secondItem="7Dd-QT-e3P" secondAttribute="top" constant="291" id="6pR-g3-pSA"/>
+                            <constraint firstItem="zEH-Fj-LZG" firstAttribute="top" secondItem="ogy-n2-bCY" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="7dX-d4-2lm"/>
                             <constraint firstItem="rr1-hc-TDa" firstAttribute="centerX" secondItem="btf-QS-Sxc" secondAttribute="centerX" type="default" id="RMF-ZD-5Ye"/>
-                            <constraint firstItem="Qde-NA-r6f" firstAttribute="centerX" secondItem="7Dd-QT-e3P" secondAttribute="centerX" type="default" id="VTf-I1-fUY"/>
-                            <constraint firstItem="btf-QS-Sxc" firstAttribute="top" secondItem="7Dd-QT-e3P" secondAttribute="top" constant="173" id="Z08-HR-Zpj"/>
+                            <constraint firstItem="ogy-n2-bCY" firstAttribute="top" secondItem="C4Z-2J-teT" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="Rxn-BU-HWY"/>
+                            <constraint firstItem="ogy-n2-bCY" firstAttribute="leading" secondItem="7Dd-QT-e3P" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="VIF-NO-gmI"/>
                             <constraint firstItem="9tL-fj-STn" firstAttribute="top" secondItem="7Dd-QT-e3P" secondAttribute="top" constant="208" id="ahL-dS-Jeo"/>
+                            <constraint firstItem="ogy-n2-bCY" firstAttribute="centerX" secondItem="btf-QS-Sxc" secondAttribute="centerX" type="default" id="frU-F8-r9H"/>
                             <constraint firstItem="IIN-jB-kBT" firstAttribute="top" secondItem="7Dd-QT-e3P" secondAttribute="top" constant="38" id="inZ-PL-vhe"/>
+                            <constraint firstItem="C4Z-2J-teT" firstAttribute="leading" secondItem="7Dd-QT-e3P" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="s09-pc-Hka"/>
+                            <constraint firstAttribute="trailing" secondItem="ogy-n2-bCY" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="tWk-ga-VnA"/>
                             <constraint firstAttribute="trailing" secondItem="22E-dx-Fdd" secondAttribute="trailing" constant="229" id="uTg-Hr-jPY"/>
                             <constraint firstItem="9tL-fj-STn" firstAttribute="leading" secondItem="7Dd-QT-e3P" secondAttribute="leading" constant="228" id="y7T-XX-MgV"/>
                             <constraint firstItem="rr1-hc-TDa" firstAttribute="top" secondItem="IIN-jB-kBT" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="yJG-ET-V9c"/>
@@ -85,7 +99,9 @@
                     <connections>
                         <outlet property="numberToSend" destination="22E-dx-Fdd" id="qsc-Ba-J9j"/>
                         <outlet property="receivedData" destination="btf-QS-Sxc" id="Jma-iZ-oUv"/>
+                        <outlet property="receivedText" destination="C4Z-2J-teT" id="MvX-ge-CHx"/>
                         <outlet property="stepper" destination="9tL-fj-STn" id="wvm-0n-lNr"/>
+                        <outlet property="textToSendField" destination="ogy-n2-bCY" id="bHU-pF-Dgb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3hU-Cu-a1c" sceneMemberID="firstResponder"/>
@@ -93,6 +109,25 @@
             <point key="canvasLocation" x="483" y="-211"/>
         </scene>
     </scenes>
+    <classes>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+        <class className="ViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="cameraPressed:"/>
+                <relationship kind="action" name="modeChanged:"/>
+                <relationship kind="action" name="startPressed:"/>
+                <relationship kind="action" name="stepperValueChanged:" candidateClass="UIStepper"/>
+                <relationship kind="outlet" name="numberToSend" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="receivedData" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="receivedText" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="stepper" candidateClass="UIStepper"/>
+                <relationship kind="outlet" name="textToSendField" candidateClass="UITextField"/>
+            </relationships>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>

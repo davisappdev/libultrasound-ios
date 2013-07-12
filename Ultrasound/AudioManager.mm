@@ -6,11 +6,13 @@
 //  Copyright (c) 2012 AppDev. All rights reserved.
 //
 
+
 #import "AudioManager.h"
 #import <AudioToolbox/AudioToolbox.h>
 #include "CAStreamBasicDescription.h"
 #include "audio_helper.h"
 #include "FFTBufferManager.h"
+#include "ProcessingFunctionsC.h"
 
 @implementation AudioManager
 {
@@ -155,6 +157,7 @@ int SetupRemoteIO (AudioUnit& inRemoteIOUnit, AURenderCallbackStruct inRenderPro
 }
 
 int fourierSize;
+float delimCutoff;
 - (id) initWithDelegate:(id<AudioManagerDelegate>)delegate
 {
     self = [super init];
@@ -164,6 +167,7 @@ int fourierSize;
         self.delegate = delegate;
         
         globalSelf = self;
+        delimCutoff = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 30 : 80;
         
         OSStatus result = AudioSessionInitialize(NULL, NULL, ToneInterruptionListener, (__bridge void *)(self));
         if (result == kAudioSessionNoError)
@@ -209,8 +213,8 @@ void printFFT(int *fftData, int len)
     //printFFT(fftData, 1024);
     
     
-    NSMutableArray *storedFFTData = [NSMutableArray array];
-    for (y = 0; y < maxY; y++)
+    float *storedFFTData = (float *)malloc(sizeof(float) * (maxY-1));
+    for (y = 0; y < maxY-1; y++)
     {
         CGFloat yFract = (CGFloat) y / (CGFloat)(maxY - 1);
         CGFloat fftIdx = yFract * ((CGFloat) fourierSize);
@@ -232,9 +236,8 @@ void printFFT(int *fftData, int len)
         interpVal *= 120;
         
         //float frequency = y * kRatio;
-        [storedFFTData addObject:@(interpVal)];
+        storedFFTData[y] = interpVal;
     }
-    [storedFFTData removeLastObject];
     
     
     
@@ -253,20 +256,20 @@ void printFFT(int *fftData, int len)
     int delimDown = 3;
     for(int j = delimIndex; j <= delimIndex + delimUp; j++)
     {
-        double a = [storedFFTData[j] floatValue];
+        double a = storedFFTData[j];
         delimValue = MAX(delimValue, a);
     }
     for(int j = delimIndex; j >= delimIndex - delimDown; j--)
     {
-        double a = [storedFFTData[j] floatValue];
+        double a = storedFFTData[j];
         delimValue = MAX(delimValue, a);
     }
     
-    
-    
-    double mean = [self meanOfArray:storedFFTData startIndex:minIndex endIndex:maxIndex];
-    double standardDeviation = [self standardDeviation:storedFFTData startIndex:minIndex endIndex:maxIndex mean:mean];
-    double maxValue = [self maxValueForArray:storedFFTData startIndex:minIndex endIndex:maxIndex];
+    minIndex = MAX(0, minIndex);
+    maxIndex = MIN(maxIndex, maxY-2);
+    double standardDeviation = meanlessStandardDeviation(storedFFTData, minIndex, maxIndex);
+    double maxValue = maxValueForArray(storedFFTData, minIndex, maxIndex);
+
     double cutoffValue = maxValue - (standardDeviation * 3);
     
     /*printf("Mean: %f\n", mean);
@@ -293,19 +296,19 @@ void printFFT(int *fftData, int len)
         double val = 0;
         for(int j = index; j <= index + upAmt; j++)
         {
-            double a = [storedFFTData[j] floatValue];
+            double a = storedFFTData[j];
             val = MAX(val, a);
         }
         for(int j = index; j >= index - downAmt; j--)
         {
-            double a = [storedFFTData[j] floatValue];
+            double a = storedFFTData[j];
             val = MAX(val, a);
         }
         
         
         if(i == 3)
         {
-        printf("%g\n", val);
+//            printf("%g\n", val);
         }
         
         if(standardDeviation < 0.5)
@@ -323,81 +326,21 @@ void printFFT(int *fftData, int len)
         }
     }
     
-    if(allBitsOff && delimValue > 15.0 && fabs(delimValue-120) > DBL_EPSILON)
+    printf("%f\n", delimValue);
+    if(delimValue > delimCutoff && fabs(delimValue-120) > DBL_EPSILON)
     {
-        printf("DELIMITER DETECTED\n");
+        //printf("DELIMITER DETECTED\n\n");
         return nil; // Returning nil indicates that the delimiter was detected
     }
+    else
+    {
+        //printf("NO DELIMITER\n\n");
+    }
+    
     
     //printf("\n");
     
     return [outputFrequencies copy];
-}
-
-
-- (double) maxValueForArray:(NSArray *) array startIndex:(int)start endIndex:(int) end
-{
-    start = MAX(0, start);
-    end = MIN(array.count-1, end);
-    
-    double maxValue = 0;
-    for (int i = start; i <= end; i++)
-    {
-        maxValue = MAX(maxValue, [array[i] doubleValue]);
-    }
-    
-    return maxValue;
-}
-- (double) meanOfArray:(NSArray *) array startIndex:(int)start endIndex:(int) end
-{
-    start = MAX(0, start);
-    end = MIN(array.count-1, end);
-    
-    double sum = 0;
-    for (int i = start; i <= end; i++) {
-        sum += [array[i] doubleValue];
-    }
-    return sum / (end - start + 1);
-}
-
-- (double) standardDeviation:(NSArray *) array startIndex:(int) start endIndex:(int) end mean: (double) mean
-{
-    start = MAX(0, start);
-    end = MIN(array.count-1, end);
-    
-    double totalDiff = 0.0;
-    for (int i = start; i <= end; i++)
-    {
-        double diff = [array[i] doubleValue] - mean;
-        diff *= diff;
-        totalDiff += diff;
-    }
-    
-    double standarDeviation = sqrt(totalDiff / (end - start + 1));
-    return standarDeviation;
-}
-- (double) meanlessStandardDeviation:(NSArray *) array startIndex:(int) start endIndex:(int) end
-{
-    double mean;
-    double sum = 0;
-    
-    for (int i = start; i <= end; i++) {
-        sum += [array[i] doubleValue];
-    }
-    
-    mean = sum / (end - start + 1);
-    
-    double totalDiff = 0.0;
-    for (int i = start; i <= end; i++)
-    {
-        double diff = [array[i] doubleValue] - mean;
-        diff *= diff;
-        totalDiff += diff;
-    }
-    
-    double standarDeviation = sqrt(totalDiff / (end - start + 1));
-    return standarDeviation;
-    
 }
 
 @end

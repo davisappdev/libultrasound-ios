@@ -44,6 +44,16 @@
     return min;
 }
 
+- (int) biggest
+{
+    int max = 0;
+    for (int i = 0; i < self.data.count; i++)
+    {
+        max = MAX([self.data[i] intValue], max);
+    }
+    return max;
+}
+
 - (void) addNumber:(int) dataToAdd
 {
     [self.data addObject:@(dataToAdd)];
@@ -51,7 +61,7 @@
 
 - (NSString *) description
 {
-    return [NSString stringWithFormat:@"%f", self.average];
+    return [NSString stringWithFormat:@"Clump Data: %@, avg = %f", self.data, self.average];
 }
 
 @end

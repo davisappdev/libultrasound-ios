@@ -12,6 +12,7 @@
 
 @property (nonatomic, readonly) double average;
 @property (nonatomic, readonly) int smallest;
+@property (nonatomic, readonly) int biggest;
 
 - (void) addNumber:(int) dataToAdd;
 @end

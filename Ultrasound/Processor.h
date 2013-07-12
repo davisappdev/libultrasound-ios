@@ -12,8 +12,11 @@
 
 + (NSArray *) processPacketData:(NSArray *)packetData;
 
++ (NSArray *) splitByteArrayIntoNibbleArray:(NSArray *)bytes;
++ (NSArray *) combineNibbleArrayToByteArray:(NSArray *)nibbles;
 
-// Fun debug encoding
+
+// String encoding
 + (NSArray *) encodeString:(NSString *)string;
 + (NSString *) decodeData:(NSArray *)data;
 
