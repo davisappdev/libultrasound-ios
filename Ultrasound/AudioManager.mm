@@ -136,7 +136,6 @@ int SetupRemoteIO (AudioUnit& inRemoteIOUnit, AURenderCallbackStruct inRenderPro
     Float32 preferredBufferSize = .005;
     AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration, sizeof(preferredBufferSize), &preferredBufferSize);
     
-    
 	inputProc.inputProc = RenderTone;
 	inputProc.inputProcRefCon = (__bridge void *)(self);
     
@@ -167,13 +166,15 @@ float delimCutoff;
         self.delegate = delegate;
         
         globalSelf = self;
-        delimCutoff = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 30 : 80;
+        delimCutoff = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 25 : 80;
         
         OSStatus result = AudioSessionInitialize(NULL, NULL, ToneInterruptionListener, (__bridge void *)(self));
         if (result == kAudioSessionNoError)
         {
             UInt32 sessionCategory = kAudioSessionCategory_PlayAndRecord;
+            UInt32 one = 1;
             AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(sessionCategory), &sessionCategory);
+            AudioSessionSetProperty(kAudioSessionProperty_OverrideCategoryDefaultToSpeaker, sizeof(one), &one);
         }
         AudioSessionSetActive(true);
         
@@ -193,11 +194,11 @@ float delimCutoff;
 #define kRatio (21.533203125)       //21.533203125
 //#define kRatio 21.5437276622068
 
-void printFFT(int *fftData, int len)
+void printFFT(float *fftData)
 {
-    for(int i = 0; i < len; i++)
+    for(int i = 0; i < 1024; i++)
     {
-        printf("%d, ", fftData[i]);
+        printf("%f, ", fftData[i]);
     }
     printf("\n");
 }
@@ -210,11 +211,10 @@ void printFFT(int *fftData, int len)
     int y, maxY;
     maxY = 1024;
     
-    //printFFT(fftData, 1024);
     
     
     float *storedFFTData = (float *)malloc(sizeof(float) * (maxY-1));
-    for (y = 0; y < maxY-1; y++)
+    for (y = 0; y < maxY - 1; y++)
     {
         CGFloat yFract = (CGFloat) y / (CGFloat)(maxY - 1);
         CGFloat fftIdx = yFract * ((CGFloat) fourierSize);
@@ -225,7 +225,7 @@ void printFFT(int *fftData, int len)
         SInt8 fft_l, fft_r;
         CGFloat fft_l_fl, fft_r_fl;
         CGFloat interpVal;
-        
+        //printf("%d\n", fftData[(int)fftIdx_i]);
         fft_l = (fftData[(int)fftIdx_i] & 0xFF000000) >> 24;
         fft_r = (fftData[(int)fftIdx_i + 1] & 0xFF000000) >> 24;
         fft_l_fl = (CGFloat)(fft_l + 80) / 64.;
@@ -241,15 +241,14 @@ void printFFT(int *fftData, int len)
     
     
     
-    
     int minIndex = round([requestedFrequencies[0] intValue] / kRatio) - 20;
     int maxIndex = round([[requestedFrequencies lastObject] intValue] / kRatio) + 20;
     int delimIndex = round(kPacketDelimiterFrequency / kRatio);
     
-    /*for(int i = minIndex; i <= maxIndex; i++)
+    for(int i = minIndex; i <= maxIndex; i++)
     {
-        printf("%d,%f\n", i - minIndex, [storedFFTData[i] floatValue]);
-    }*/
+     //   printf("%d,%f\n", i - minIndex, storedFFTData[i]);
+    }
     
     double delimValue = 0;
     int delimUp = 3;
@@ -305,6 +304,7 @@ void printFFT(int *fftData, int len)
             val = MAX(val, a);
         }
         
+//        printf("%f\n", val);
         
         if(i == 3)
         {
@@ -326,10 +326,10 @@ void printFFT(int *fftData, int len)
         }
     }
     
-    printf("%f\n", delimValue);
+    //printf("%f\n", delimValue);
     if(delimValue > delimCutoff && fabs(delimValue-120) > DBL_EPSILON)
     {
-        //printf("DELIMITER DETECTED\n\n");
+        printf("DELIMITER DETECTED\n\n");
         return nil; // Returning nil indicates that the delimiter was detected
     }
     else
@@ -339,7 +339,7 @@ void printFFT(int *fftData, int len)
     
     
     //printf("\n");
-    
+    free(storedFFTData);
     return [outputFrequencies copy];
 }
 

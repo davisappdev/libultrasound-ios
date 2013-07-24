@@ -101,6 +101,7 @@
         [self.transmitTimer invalidate];
         [self transmitPacketDelimiterWithCallback:^{
             [self.delegate audioFinishedTransmittingSequence];
+            [self stop];
         }];
         return;
     }
@@ -169,7 +170,7 @@
     else if(receivedData != nil && self.recentlyDelimited)
     {
         self.hasHeardPacketDelimiter = YES;
-        NSLog(@"Staring packet");
+        NSLog(@"Starting packet");
     }
     
     if(self.hasHeardPacketDelimiter)
@@ -222,6 +223,7 @@
 float amplitudeAdjustmentsIPadTransmit[] = {4.0, 4.0, 10.0, 20.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
 float amplitudeAdjustmentsITouchTransmit[] = {1.0, 1.0, 1.0, 1.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
 float *amplitudeAdjustments; // Set at runtime for specific device;
+#define DEBUG_AUDIO_PLAYBACK 0
 - (void) renderAudioIntoData:(Float32 *)data withSampleRate:(double)sampleRate numberOfFrames:(int)numberOfFrames
 {   
     if(self.isPlaying)
@@ -234,7 +236,6 @@ float *amplitudeAdjustments; // Set at runtime for specific device;
                 continue;
             }
             
-            
             float sum = 0.0f;
             self.t += 1.0 / sampleRate;
             double time = self.t * 2 * M_PI;
@@ -245,10 +246,11 @@ float *amplitudeAdjustments; // Set at runtime for specific device;
                 continue;
             }
             
-            
-            /*data[frame] = sin(time * 587.33);
-            data[frame] += sin(time * 880);*/
-
+#if DEBUG_AUDIO_PLAYBACK == 1
+            data[frame] = sin(time * 587.33) * 10;
+            data[frame] += sin(time * 880);
+            continue;
+#endif
 
             float divisor = 0;
             for (int i = 0; i < kNumberOfTransmitFrequencies; i++)
@@ -265,7 +267,6 @@ float *amplitudeAdjustments; // Set at runtime for specific device;
             }
             
             sum /= divisor;
-            
             data[frame] = sum;
         }
     }

@@ -101,44 +101,6 @@
             needToSync = NO;
         }
     }
-
-    
-    
-    /*for(int n = 0; n < numSections; n++)
-    {
-        NSMutableDictionary *values = [NSMutableDictionary dictionary];
-        for(int i = n*kNumberLength; i < n*kNumberLength + kNumberLength; i++)
-        {
-            if(i >= packetData.count)
-            {
-                // Use -1 to indicate accessing the array out of bounds.. use this to detect stray data at the end of the array
-                [self incrementCountForKey:@(-1) inDictionary:values];
-                continue;
-            }
-            
-            NSNumber *value = packetData[i];
-            [self incrementCountForKey:value inDictionary:values];
-        }
-        
-        
-        int maxCount = 0;
-        int mode = 0;
-        for(NSNumber *value in values.allKeys)
-        {
-            int count = [[values objectForKey:value] intValue];
-            if(count > maxCount)
-            {
-                maxCount = count;
-                mode = [value intValue];
-            }
-        }
-        
-        if(mode !=-1)
-        {
-            [result addObject:@(mode)];
-        }
-    }*/
-    
     return [result copy];
 }
 

@@ -17,14 +17,14 @@
     NSArray *firstDerivative = differentiate(packetData, 4);
     
     NSArray *cutoffFirstDeriv = cutoffData(multiplyArrayByConstant(firstDerivative, 10), 0.5);
-    printArrayWithIndices(cutoffFirstDeriv);
-    
+//    printArrayWithIndices(cutoffFirstDeriv);
     
 
     NSArray *mergedDeriv = mergeGaps(cutoffFirstDeriv, 4);
     //        printArray(mergedLowPassedSecondDeriv);
 
     NSArray *clumpIndices = findMidpointsOfClumps(mergedDeriv);
+    NSLog(@"-------Clump indices-----");
     printArray(clumpIndices);
     *distances = findDistances(clumpIndices);
     
@@ -55,8 +55,22 @@
     {
         return 30;
     }
+    
+    // Find the clump whose average is closest to the experimentally determined splitting value of 30
+    int closestClump;
+    double minDiff = DBL_MAX;
+    for (int i = 0; i < distanceClumps.count; i++)
+    {
+        double average = [distanceClumps[i] average];
+        double diff = abs(average - 30.0);
+        if (diff < minDiff)
+        {
+            minDiff = diff;
+            closestClump = i;
+        }
+    }
 
-    float fallbackDistance = [distanceClumps[0] average];
+    float fallbackDistance = [distanceClumps[closestClump] average];
     
     // Add on the last distance value
     int lastClumpIndex = [[clumpIndices lastObject] intValue];
@@ -66,7 +80,7 @@
     {
         *distances = [*distances arrayByAddingObject:@(lastDistance)];
     }
-    
+    NSLog(@"-------Distances-----");
     printArray(*distances);
     
     //printf("%f", distance);
