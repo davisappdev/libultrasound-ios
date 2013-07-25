@@ -242,7 +242,7 @@ float *amplitudeAdjustments; // Set at runtime for specific device;
             
             if(self.isTransmittingDelimiter)
             {
-                data[frame] = sin(time * kPacketDelimiterFrequency);
+                data[frame] = sin(time * kPacketDelimiterFrequency) * 5;
                 continue;
             }
             

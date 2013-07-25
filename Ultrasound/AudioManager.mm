@@ -298,6 +298,8 @@ void printFFTStuff(int32_t *fftData)
         delimValue = MAX(delimValue, a);
     }
     
+//    double averageValueInUltraSonicRange = meanOfArray(storedFFTData, 0, maxY - 1);
+    
     minIndex = MAX(0, minIndex);
     maxIndex = MIN(maxIndex, maxY-2);
     double standardDeviation = meanlessStandardDeviation(storedFFTData, minIndex, maxIndex);
@@ -305,7 +307,7 @@ void printFFTStuff(int32_t *fftData)
     double cutoffValue = maxValue - (standardDeviation * 3);
     cutoffValue = MIN(cutoffValue, 20);
     
-//    printf("STD: %f\n", standardDeviation);
+//    printf("AVG: %f\n", averageValueInUltraSonicRange);
 //    printf("Cutoff Value: %f\n", cutoffValue);
     
     
