@@ -50,7 +50,6 @@ OSStatus RenderTone(
     {
         AudioUnitRender(globalSelf->toneUnit, ioActionFlags, inTimeStamp, 1, inNumberFrames, ioData);
         
-        SInt8 *data_ptr = (SInt8 *)(ioData->mBuffers[0].mData);
         if (globalSelf->fft == NULL)
         {
             return noErr;
@@ -63,10 +62,10 @@ OSStatus RenderTone(
     else
     {
         Float32 *ptr = (Float32 *)(ioData->mBuffers[0].mData);
-        
         [globalSelf.delegate renderAudioIntoData:ptr withSampleRate:kSampleRate numberOfFrames:inNumberFrames];
     }
-    //SilenceData(ioData);
+   
+//    SilenceData(ioData);
     return noErr;
 }
 
@@ -141,8 +140,6 @@ int SetupRemoteIO (AudioUnit& inRemoteIOUnit, AURenderCallbackStruct inRenderPro
     
     SetupRemoteIO(toneUnit, inputProc, thruFormat);
     
-    
-    
     UInt32 maxFPS;
     UInt32 size = sizeof(maxFPS);
     AudioUnitGetProperty(toneUnit, kAudioUnitProperty_MaximumFramesPerSlice, kAudioUnitScope_Global, 0, &maxFPS, &size);
@@ -190,18 +187,57 @@ float delimCutoff;
 
 
 #define CLAMP(min,x,max) (x < min ? min : (x > max ? max : x))
-//#define kRatio 21.5542521994135      //21.533203125
-#define kRatio (21.533203125)       //21.533203125
-//#define kRatio 21.5437276622068
+#define kRatio (21.533203125)
 
 void printFFT(float *fftData)
 {
     for(int i = 0; i < 1024; i++)
     {
-        printf("%f, ", fftData[i]);
+        printf("%d,%f\n", i, fftData[i]);
     }
     printf("\n");
 }
+
+
+BOOL shouldPrintNormal = NO;
+BOOL shouldPrintInterp = NO;
+void printFFTStuff(int32_t *fftData)
+{
+    int maxY = 1024;
+    for (int y = 0; y < maxY - 1; y++)
+    {
+        CGFloat yFract = (CGFloat) y / (CGFloat)(maxY - 1);
+        CGFloat fftIdx = yFract * ((CGFloat) fourierSize);
+        
+        double fftIdx_i, fftIdx_f;
+        fftIdx_f = modf(fftIdx, &fftIdx_i);
+        
+        SInt8 fft_l, fft_r;
+        CGFloat fft_l_fl, fft_r_fl;
+        CGFloat interpVal;
+        fft_l = (fftData[(int)fftIdx_i] & 0xFF000000) >> 24;
+        if(shouldPrintNormal)
+        {
+            printf("%d,%d\n", y, fft_l);
+        }
+        fft_r = (fftData[(int)fftIdx_i + 1] & 0xFF000000) >> 24;
+        fft_l_fl = (CGFloat)(fft_l + 80) / 64.;
+        fft_r_fl = (CGFloat)(fft_r + 80) / 64.;
+        interpVal = fft_l_fl * (1. - fftIdx_f) + fft_r_fl * fftIdx_f;
+        
+        interpVal = CLAMP(0., interpVal, 1.);
+        interpVal *= 120;
+        
+        if(shouldPrintInterp)
+        {
+            printf("%d,%f\n", y, interpVal);
+        }
+        
+    }
+}
+
+
+
 
 
 - (NSArray *) fourier:(NSArray *) requestedFrequencies
@@ -211,8 +247,8 @@ void printFFT(float *fftData)
     int y, maxY;
     maxY = 1024;
     
-    
-    
+    printFFTStuff(fftData);
+
     float *storedFFTData = (float *)malloc(sizeof(float) * (maxY-1));
     for (y = 0; y < maxY - 1; y++)
     {
@@ -225,7 +261,6 @@ void printFFT(float *fftData)
         SInt8 fft_l, fft_r;
         CGFloat fft_l_fl, fft_r_fl;
         CGFloat interpVal;
-        //printf("%d\n", fftData[(int)fftIdx_i]);
         fft_l = (fftData[(int)fftIdx_i] & 0xFF000000) >> 24;
         fft_r = (fftData[(int)fftIdx_i + 1] & 0xFF000000) >> 24;
         fft_l_fl = (CGFloat)(fft_l + 80) / 64.;
@@ -235,7 +270,6 @@ void printFFT(float *fftData)
         interpVal = CLAMP(0., interpVal, 1.);
         interpVal *= 120;
         
-        //float frequency = y * kRatio;
         storedFFTData[y] = interpVal;
     }
     
@@ -247,7 +281,7 @@ void printFFT(float *fftData)
     
     for(int i = minIndex; i <= maxIndex; i++)
     {
-     //   printf("%d,%f\n", i - minIndex, storedFFTData[i]);
+//       printf("%d,%f\n", i - minIndex, storedFFTData[i]);
     }
     
     double delimValue = 0;
@@ -268,12 +302,11 @@ void printFFT(float *fftData)
     maxIndex = MIN(maxIndex, maxY-2);
     double standardDeviation = meanlessStandardDeviation(storedFFTData, minIndex, maxIndex);
     double maxValue = maxValueForArray(storedFFTData, minIndex, maxIndex);
-
     double cutoffValue = maxValue - (standardDeviation * 3);
+    cutoffValue = MIN(cutoffValue, 20);
     
-    /*printf("Mean: %f\n", mean);
-    printf("STD: %f\n", standardDeviation);
-    printf("Cutoff Value: %f\n", cutoffValue);*/
+//    printf("STD: %f\n", standardDeviation);
+//    printf("Cutoff Value: %f\n", cutoffValue);
     
     
     NSMutableArray *outputFrequencies = [NSMutableArray array];
@@ -285,7 +318,7 @@ void printFFT(float *fftData)
         //NSLog(@"Index: %i", index-minIndex);
         
         // Calculate the difference neighboring frequency indices.
-        int dIndexUp = (i == requestedFrequencies.count-1) ? (index - round([requestedFrequencies[i-1] intValue] / kRatio)) : (round([requestedFrequencies[i+1] intValue] / kRatio) - index);
+        int dIndexUp = (i == requestedFrequencies.count - 1) ? (index - round([requestedFrequencies[i - 1] intValue] / kRatio)) : (round([requestedFrequencies[i + 1] intValue] / kRatio) - index);
         int dIndexDown = (i == 0) ? (round([requestedFrequencies[i+1] intValue] / kRatio) - index) : (index - round([requestedFrequencies[i-1] intValue] / kRatio));
         
         int upAmt = MAX(ceilf(dIndexUp / 4.0f) - 1, 2);
@@ -306,11 +339,6 @@ void printFFT(float *fftData)
         
 //        printf("%f\n", val);
         
-        if(i == 3)
-        {
-//            printf("%g\n", val);
-        }
-        
         if(standardDeviation < 0.5)
         {
             [outputFrequencies addObject:@(NO)];
@@ -326,15 +354,15 @@ void printFFT(float *fftData)
         }
     }
     
-    //printf("%f\n", delimValue);
-    if(delimValue > delimCutoff && fabs(delimValue-120) > DBL_EPSILON)
+    printf("%f\n", delimValue);
+    if(delimValue > delimCutoff && fabs(delimValue - 120) > DBL_EPSILON)
     {
         printf("DELIMITER DETECTED\n\n");
         return nil; // Returning nil indicates that the delimiter was detected
     }
     else
     {
-        //printf("NO DELIMITER\n\n");
+        printf("NO DELIMITER\n\n");
     }
     
     

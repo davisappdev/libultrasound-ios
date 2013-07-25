@@ -225,7 +225,7 @@ void SpectrumAnalysisProcess(H_SPECTRUM_ANALYSIS p, const int32_t* inTimeSig, in
 		else
 		{
 			// Calculate squared magnitude spectrum
-			for(uint i = 0; i < p->size/2; ++i)
+			for(uint i = 0; i < p->size / 2; ++i)
 			{
 				// squared magnitude
 				outMagSpectrum[i] = SquareMag(p->fftBuffer[i].real, p->fftBuffer[i].imag);

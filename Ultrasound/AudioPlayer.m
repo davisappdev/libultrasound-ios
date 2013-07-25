@@ -101,7 +101,7 @@
         [self.transmitTimer invalidate];
         [self transmitPacketDelimiterWithCallback:^{
             [self.delegate audioFinishedTransmittingSequence];
-            [self stop];
+            //[self stop];
         }];
         return;
     }
