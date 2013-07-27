@@ -14,7 +14,6 @@
 @property (nonatomic, strong) AudioPlayer *audioPlayer;
 @property (nonatomic, weak) UIButton *button;
 
-@property (nonatomic, strong) UIPopoverController *pop;
 @end
 
 @implementation ViewController
@@ -24,7 +23,7 @@
     [super viewDidLoad];
     
     self.audioPlayer = [[AudioPlayer alloc] init];
-    self.audioPlayer.delegate = self;
+    self.audioPlayer.receiveDelegate = self;
     self.audioPlayer.isReceiving = YES;
     
     self.numberToSend.delegate = self;

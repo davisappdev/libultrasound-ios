@@ -356,15 +356,15 @@ void printFFTStuff(int32_t *fftData)
         }
     }
     
-    printf("%f\n", delimValue);
+//    printf("%f\n", delimValue);
     if(delimValue > delimCutoff && fabs(delimValue - 120) > DBL_EPSILON)
     {
-        printf("DELIMITER DETECTED\n\n");
+//        printf("DELIMITER DETECTED\n\n");
         return nil; // Returning nil indicates that the delimiter was detected
     }
     else
     {
-        printf("NO DELIMITER\n\n");
+//        printf("NO DELIMITER\n\n");
     }
     
     

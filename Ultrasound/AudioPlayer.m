@@ -10,7 +10,7 @@
 #import "Processor.h"
 
 #define kFFTInterval 0.02
-#define kTransmitInterval 0.6
+#define kTransmitInterval 0.4
 
 @interface AudioPlayer ()
 {
@@ -38,6 +38,15 @@
 
 @implementation AudioPlayer
 
+AudioPlayer *sharedPlayer;
++ (AudioPlayer *) sharedAudioPlayer
+{
+    if(sharedPlayer == nil)
+    {
+        sharedPlayer = [[AudioPlayer alloc] init];
+    }
+    return sharedPlayer;
+}
 
 - (void) transmitPacketDelimiterWithCallback:(void (^)(void))callback
 {
@@ -83,6 +92,9 @@
 
 - (void) transmitSequence:(NSArray *)sequence
 {
+    NSLog(@"Transmitted nibble sequence: %@", sequence);
+    [self.transmitDelegate audioStartedTransmittingSequence];
+
     __weak AudioPlayer *weakSelf = self;
     [self transmitPacketDelimiterWithCallback:^{
         weakSelf.sequenceIndex = 0;
@@ -93,6 +105,12 @@
     }];
 }
 
+- (void) transmitString:(NSString *)string
+{
+    NSArray *nibbles = [Processor encodeString:string];
+    [self transmitSequence:nibbles];
+}
+
 - (void) updateTransmitSequence:(NSTimer *)timer
 {
     NSArray *seq = timer.userInfo;
@@ -100,8 +118,8 @@
     {
         [self.transmitTimer invalidate];
         [self transmitPacketDelimiterWithCallback:^{
-            [self.delegate audioFinishedTransmittingSequence];
-            //[self stop];
+            [self.transmitDelegate audioFinishedTransmittingSequence];
+            [self stop];
         }];
         return;
     }
@@ -157,7 +175,7 @@
             NSString *receivedText = [Processor decodeData:result];
                        
             NSLog(@"%@", receivedText);
-            [self.delegate audioReceivedText:receivedText];
+            [self.receiveDelegate audioReceivedText:receivedText];
         }
         
         [self.receivedPacketData removeAllObjects];
@@ -176,7 +194,7 @@
     if(self.hasHeardPacketDelimiter)
     {
         int byte = (int)[self convertBoolDataToByte:receivedData];
-        [self.delegate audioReceivedDataUpdate:byte];
+        [self.receiveDelegate audioReceivedDataUpdate:byte];
         [self.receivedPacketData addObject:@(byte)];
         
 //        NSLog(@"Adding byte to packet array");

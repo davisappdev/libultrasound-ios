@@ -56,6 +56,11 @@
 		36C3017D1634966F00D44AE8 /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 36C3017C1634966F00D44AE8 /* AudioPlayer.m */; };
 		36CC7AEB1784A906004E0127 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36CC7AEA1784A906004E0127 /* QuartzCore.framework */; };
 		36CC7AEE1784E49E004E0127 /* Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 36CC7AED1784E49D004E0127 /* Processor.m */; };
+		36F70B9517A33B090028228B /* TransmitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 36F70B9417A33B090028228B /* TransmitViewController.m */; };
+		36F70B9817A33B190028228B /* ReceiveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 36F70B9717A33B190028228B /* ReceiveViewController.m */; };
+		36F70B9F17A347FA0028228B /* GraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 36F70B9C17A347FA0028228B /* GraphView.m */; };
+		36F70BA017A347FA0028228B /* GraphViewUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 36F70B9E17A347FA0028228B /* GraphViewUtils.m */; };
+		36F70BA317A34E0F0028228B /* FFTGraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 36F70BA217A34E0F0028228B /* FFTGraphView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -134,6 +139,17 @@
 		36CC7AEA1784A906004E0127 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		36CC7AEC1784E49D004E0127 /* Processor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Processor.h; sourceTree = "<group>"; };
 		36CC7AED1784E49D004E0127 /* Processor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Processor.m; sourceTree = "<group>"; };
+		36F70B9317A33B090028228B /* TransmitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransmitViewController.h; sourceTree = "<group>"; };
+		36F70B9417A33B090028228B /* TransmitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransmitViewController.m; sourceTree = "<group>"; };
+		36F70B9617A33B190028228B /* ReceiveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReceiveViewController.h; sourceTree = "<group>"; };
+		36F70B9717A33B190028228B /* ReceiveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReceiveViewController.m; sourceTree = "<group>"; };
+		36F70B9A17A347FA0028228B /* Transforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Transforms.h; sourceTree = "<group>"; };
+		36F70B9B17A347FA0028228B /* GraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphView.h; sourceTree = "<group>"; };
+		36F70B9C17A347FA0028228B /* GraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphView.m; sourceTree = "<group>"; };
+		36F70B9D17A347FA0028228B /* GraphViewUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphViewUtils.h; sourceTree = "<group>"; };
+		36F70B9E17A347FA0028228B /* GraphViewUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphViewUtils.m; sourceTree = "<group>"; };
+		36F70BA117A34E0F0028228B /* FFTGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTGraphView.h; sourceTree = "<group>"; };
+		36F70BA217A34E0F0028228B /* FFTGraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTGraphView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +196,7 @@
 				361B1A00165AF15100BC19CB /* SpectrumAnalysis.cpp */,
 			);
 			name = FFT;
+			path = Ultrasound;
 			sourceTree = "<group>";
 		};
 		366FDD84178F4F440095C1A1 /* CardIO */ = {
@@ -191,7 +208,8 @@
 				366FDD88178F4F440095C1A1 /* CardIOPaymentViewControllerDelegate.h */,
 				366FDD89178F4F440095C1A1 /* libCardIO.a */,
 			);
-			path = CardIO;
+			name = CardIO;
+			path = Ultrasound/CardIO;
 			sourceTree = "<group>";
 		};
 		36791C19178792A3002681B7 /* ProcessAlgo */ = {
@@ -199,6 +217,7 @@
 			children = (
 			);
 			name = ProcessAlgo;
+			path = Ultrasound;
 			sourceTree = "<group>";
 		};
 		3692BEB7165741F3002A8605 /* iPublicUtility */ = {
@@ -213,6 +232,7 @@
 				3692BEB0165741E9002A8605 /* CAStreamBasicDescription.cpp */,
 			);
 			name = iPublicUtility;
+			path = Ultrasound;
 			sourceTree = "<group>";
 		};
 		36B750C2161693A700A6ED3B = {
@@ -237,6 +257,10 @@
 		36B750D0161693A700A6ED3B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				366FDD84178F4F440095C1A1 /* CardIO */,
+				3692BEB7165741F3002A8605 /* iPublicUtility */,
+				36791C19178792A3002681B7 /* ProcessAlgo */,
+				361B1A05165AF16200BC19CB /* FFT */,
 				366FDD95178F4FD50095C1A1 /* Security.framework */,
 				366FDD93178F4FCB0095C1A1 /* OpenGLES.framework */,
 				366FDD91178F4FC20095C1A1 /* CoreVideo.framework */,
@@ -256,14 +280,13 @@
 		36B750D7161693A700A6ED3B /* Ultrasound */ = {
 			isa = PBXGroup;
 			children = (
-				366FDD84178F4F440095C1A1 /* CardIO */,
+				36F70B9917A347E60028228B /* Graphing */,
 				36791C1D17879361002681B7 /* ProcessingFunctions.h */,
 				36791C1E17879361002681B7 /* ProcessingFunctions.m */,
 				36791C1F17879361002681B7 /* Clump.h */,
 				36791C2017879361002681B7 /* Clump.m */,
 				36791C1A178792BC002681B7 /* ProcessAlgoMain.h */,
 				36791C1B178792BC002681B7 /* ProcessAlgoMain.m */,
-				36791C19178792A3002681B7 /* ProcessAlgo */,
 				36B750E9161693A800A6ED3B /* MainStoryboard_iPhone.storyboard */,
 				36B750EC161693A800A6ED3B /* MainStoryboard_iPad.storyboard */,
 				36B750EF161693A800A6ED3B /* ViewController.h */,
@@ -274,13 +297,15 @@
 				36B75110161693E900A6ED3B /* AudioManager.mm */,
 				3692BE9F165740B2002A8605 /* audio_helper.h */,
 				3692BEA71657414F002A8605 /* audio_helper.cpp */,
-				361B1A05165AF16200BC19CB /* FFT */,
-				36B750D8161693A700A6ED3B /* Supporting Files */,
-				3692BEB7165741F3002A8605 /* iPublicUtility */,
 				36CC7AEC1784E49D004E0127 /* Processor.h */,
 				36CC7AED1784E49D004E0127 /* Processor.m */,
 				362C2AC6178E1C5500748B41 /* ProcessingFunctionsC.h */,
 				362C2AC7178E1C7900748B41 /* ProcessingFunctionsC.cpp */,
+				36F70B9317A33B090028228B /* TransmitViewController.h */,
+				36F70B9417A33B090028228B /* TransmitViewController.m */,
+				36F70B9617A33B190028228B /* ReceiveViewController.h */,
+				36F70B9717A33B190028228B /* ReceiveViewController.m */,
+				36B750D8161693A700A6ED3B /* Supporting Files */,
 			);
 			path = Ultrasound;
 			sourceTree = "<group>";
@@ -318,6 +343,20 @@
 				36B75101161693A800A6ED3B /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		36F70B9917A347E60028228B /* Graphing */ = {
+			isa = PBXGroup;
+			children = (
+				36F70B9A17A347FA0028228B /* Transforms.h */,
+				36F70B9B17A347FA0028228B /* GraphView.h */,
+				36F70B9C17A347FA0028228B /* GraphView.m */,
+				36F70B9D17A347FA0028228B /* GraphViewUtils.h */,
+				36F70B9E17A347FA0028228B /* GraphViewUtils.m */,
+				36F70BA117A34E0F0028228B /* FFTGraphView.h */,
+				36F70BA217A34E0F0028228B /* FFTGraphView.m */,
+			);
+			name = Graphing;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -431,8 +470,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36F70B9517A33B090028228B /* TransmitViewController.m in Sources */,
 				362C2AC8178E1C7900748B41 /* ProcessingFunctionsC.cpp in Sources */,
+				36F70BA017A347FA0028228B /* GraphViewUtils.m in Sources */,
 				36B750DE161693A700A6ED3B /* main.m in Sources */,
+				36F70BA317A34E0F0028228B /* FFTGraphView.m in Sources */,
 				36B750E2161693A800A6ED3B /* AppDelegate.m in Sources */,
 				36B750F1161693A800A6ED3B /* ViewController.m in Sources */,
 				36B75111161693E900A6ED3B /* AudioManager.mm in Sources */,
@@ -441,6 +483,8 @@
 				3692BEB1165741E9002A8605 /* CADebugMacros.cpp in Sources */,
 				3692BEB3165741E9002A8605 /* CAXException.cpp in Sources */,
 				3692BEB5165741E9002A8605 /* CAStreamBasicDescription.cpp in Sources */,
+				36F70B9F17A347FA0028228B /* GraphView.m in Sources */,
+				36F70B9817A33B190028228B /* ReceiveViewController.m in Sources */,
 				361B19FA165AF09A00BC19CB /* FFTBufferManager.cpp in Sources */,
 				361B1A01165AF15100BC19CB /* rad2fft.c in Sources */,
 				361B1A03165AF15100BC19CB /* SpectrumAnalysis.cpp in Sources */,

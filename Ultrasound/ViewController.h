@@ -3,7 +3,7 @@
 #import "AudioPlayer.h"
 #import "CardIO.h"
 
-@interface ViewController : UIViewController <AudioPlayerDelegate, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CardIOPaymentViewControllerDelegate>
+@interface ViewController : UIViewController <AudioPlayerReceiveDelegate, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CardIOPaymentViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *receivedData;
 @property (weak, nonatomic) IBOutlet UILabel *receivedText;

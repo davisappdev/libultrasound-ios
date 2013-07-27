@@ -14,14 +14,14 @@
 @implementation ProcessAlgoMain
 + (float) getDistanceSpacingFallback:(NSArray *) packetData andDistancesIntoArray:(NSArray **)distances
 {
-    NSArray *firstDerivative = differentiate(packetData, 4);
+    NSArray *firstDerivative = differentiate(packetData, 2);
     
     NSArray *cutoffFirstDeriv = cutoffData(multiplyArrayByConstant(firstDerivative, 10), 0.5);
-//    printArrayWithIndices(cutoffFirstDeriv);
+    printArrayWithIndices(cutoffFirstDeriv);
     
 
     NSArray *mergedDeriv = mergeGaps(cutoffFirstDeriv, 4);
-    //        printArray(mergedLowPassedSecondDeriv);
+//    printArray(mergedLowPassedSecondDeriv);
 
     NSArray *clumpIndices = findMidpointsOfClumps(mergedDeriv);
     NSLog(@"-------Clump indices-----");
@@ -53,7 +53,7 @@
     
     if(distanceClumps.count == 0)
     {
-        return 30;
+        return 20;
     }
     
     // Find the clump whose average is closest to the experimentally determined splitting value of 30
@@ -62,7 +62,7 @@
     for (int i = 0; i < distanceClumps.count; i++)
     {
         double average = [distanceClumps[i] average];
-        double diff = abs(average - 30.0);
+        double diff = abs(average - 20.0);
         if (diff < minDiff)
         {
             minDiff = diff;

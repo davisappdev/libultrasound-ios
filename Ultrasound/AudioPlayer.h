@@ -2,23 +2,33 @@
 #import <Foundation/Foundation.h>
 #import "AudioManager.h"
 
-@protocol AudioPlayerDelegate <NSObject>
+@protocol AudioPlayerReceiveDelegate <NSObject>
 
 - (void) audioReceivedDataUpdate:(int)data;
-- (void) audioFinishedTransmittingSequence;
 - (void) audioReceivedText:(NSString *) text;
 
 @end
 
+@protocol AudioPlayerTransmitDelegate <NSObject>
+
+- (void) audioStartedTransmittingSequence;
+- (void) audioFinishedTransmittingSequence;
+
+@end
+
 @interface AudioPlayer : NSObject <AudioManagerDelegate>
+
++ (AudioPlayer *) sharedAudioPlayer;
 
 - (void) start;
 - (void) stop;
 - (void) setDataToTransmit: (int) numberToSend;
 - (void) transmitSequence:(NSArray *)sequence;
 - (void) transmitPacketDelimiterWithCallback:(void (^)(void))callback;
+- (void) transmitString:(NSString *)string;
 
 @property (nonatomic) BOOL isReceiving;
-@property (nonatomic, weak) id<AudioPlayerDelegate> delegate;
+@property (nonatomic, weak) id<AudioPlayerTransmitDelegate> transmitDelegate;
+@property (nonatomic, weak) id<AudioPlayerReceiveDelegate> receiveDelegate;
 
 @end
