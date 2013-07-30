@@ -72,8 +72,6 @@ AudioPlayer *sharedPlayer;
 {
     self.frequenciesChanging = YES;
     
-    printf("# : %d\n", currentFrame);
-    callCount = 0;
     currentFrame = 0;
     if(frequenciesToSend != NULL)
     {
@@ -102,24 +100,7 @@ AudioPlayer *sharedPlayer;
         }
     }
     
-    
-    /*double phaseShift = 0;
-    double dx = 1.0101e-8;
-    while(phaseShift < M_PI * 2)
-    {
-        double dy = ABS(audioFunction(M_PI * 2 * (self.t + phaseShift), frequenciesToSend) - oldValue);
-        if(dy < 0.002)
-        {
-            break;
-        }
-        phaseShift += dx;
-    }
-    
-    printf("Phase shift: %f\nTime: %f\n", phaseShift, self.t);
-    self.t += phaseShift;*/
-    
     self.frequenciesChanging = NO;
-    interpVal = 0;
     [self.transmitDelegate audioStartedTransmittingFrequencies:frequenciesToSend withSize:kNumberOfTransmitFrequencies];
 }
 
@@ -297,42 +278,12 @@ double audioFunction(double t, float *frequenciesToSend)
     return sum / divisor;
 }
 
-double audioFunctionInterp(double t, float *oldFreqs, float *newFreqs, float progress)
-{
-#if DEBUG_AUDIO_PLAYBACK == 1
-    return sin(t * 587.33);
-#endif
-    
-    if(oldFreqs == NULL || newFreqs == NULL) return 0;
-    
-    double sum = 0.0;
-    double divisor = 0;
-    for (int i = 0; i < kNumberOfTransmitFrequencies; i++)
-    {
-        double oldFreq = oldFreqs[i];
-        double newFreq = newFreqs[i];
-        double val = sin(t * oldFreq) * (1 - progress) + sin(t * newFreq) * progress;
-        
-        sum += val;
-        divisor += newFreq > 1 ? 1 : 0;
-    }
-    
-    if(divisor == 0)
-    {
-        return 0;
-    }
-    
-    return sum / divisor;
-}
-
 
 float amplitudeAdjustmentsIPadTransmit[] = {4.0, 4.0, 10.0, 20.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
 float amplitudeAdjustmentsITouchTransmit[] = {1.0, 1.0, 1.0, 1.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
 float *amplitudeAdjustments; // Set at runtime for specific device;
-double interpVal = 0;
-double maxInterp = 15360.0;
+
 int currentFrame = 0;
-int callCount = 0;
 double maxCallCount = 14592.0;
 
 double rampUp = 0.2;
@@ -342,10 +293,6 @@ double rampDown = 0.8;
 {   
     if(self.isPlaying)
     {
-        callCount++;
-//        double maxCallCount = sampleRate * kTransmitInterval;
-//        printf("CALL COUNT: %f\n", callCount);
-        
         for (UInt32 frame = 0; frame < numberOfFrames; frame++)
         {
             if(frequenciesToSend == NULL || self.frequenciesChanging)
@@ -363,21 +310,6 @@ double rampDown = 0.8;
                 continue;
             }
             
-            /*if(interpVal <= maxInterp)
-            {
-                double progress = MIN(interpVal / maxInterp, 1.0);
-                if(progress > 0.98)
-                {
-                    printf("Progress: %f\n", progress);
-                }
-                //data[frame] = progress * audioFunction(time, frequenciesToSend) + (1.0-progress)*audioFunction(time, oldTransmittingFrequencies);
-                data[frame] = audioFunctionInterp(time, oldTransmittingFrequencies, frequenciesToSend, progress);
-                interpVal += 1.0;
-            }
-            else
-            {
-                data[frame] = audioFunction(time, frequenciesToSend);
-            }*/
             
             double progress = (double) (currentFrame / (double) maxCallCount);
             double ramp = 0.0;
@@ -396,26 +328,8 @@ double rampDown = 0.8;
             ramp = MIN(ramp, 1.0);
             ramp = MAX(ramp, 0.0);
             
-//            printf("%i\n", currentFrame);
             data[frame] = audioFunction(time, frequenciesToSend) * ramp;
             currentFrame++;
-//            float sum = 0.0f;
-//            float divisor = 0;
-//            for (int i = 0; i < kNumberOfTransmitFrequencies; i++)
-//            {
-//                double freq = frequenciesToSend[i];
-//                sum += sin(time * freq) * amplitudeAdjustments[i];
-//                divisor += freq > 1 ? 1 : 0;
-//            }
-//            
-//            if(divisor == 0)
-//            {
-//                data[frame] = 0;
-//                continue;
-//            }
-//            
-//            sum /= divisor;
-//            data[frame] = sum;
         }
     }
 }
