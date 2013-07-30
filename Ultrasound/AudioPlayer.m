@@ -9,19 +9,18 @@
 #import "AudioPlayer.h"
 #import "Processor.h"
 
-#define kFFTInterval 0.02
-#define kTransmitInterval 0.4
 
 @interface AudioPlayer ()
 {
     float *frequenciesToSend;
+    float *oldTransmittingFrequencies;
 }
 
 @property (nonatomic, strong) AudioManager *audio;
 @property (nonatomic) double theta;
 @property (nonatomic) double frequency;
-@property (nonatomic) double t;
 @property (nonatomic) BOOL isPlaying;
+@property (nonatomic) double t;
 @property (nonatomic, strong) NSTimer *FFTTimer;
 @property (nonatomic, strong) NSTimer *transmitTimer;
 @property BOOL frequenciesChanging;
@@ -37,6 +36,7 @@
 @end
 
 @implementation AudioPlayer
+
 
 AudioPlayer *sharedPlayer;
 + (AudioPlayer *) sharedAudioPlayer
@@ -71,6 +71,21 @@ AudioPlayer *sharedPlayer;
 - (void) setDataToTransmit: (int) numberToSend
 {
     self.frequenciesChanging = YES;
+    
+    printf("# : %d\n", currentFrame);
+    callCount = 0;
+    currentFrame = 0;
+    if(frequenciesToSend != NULL)
+    {
+        if(oldTransmittingFrequencies != NULL)
+        {
+            free(oldTransmittingFrequencies);
+        }
+        oldTransmittingFrequencies = malloc(sizeof(float) * kNumberOfTransmitFrequencies);
+        
+        memcpy(oldTransmittingFrequencies, frequenciesToSend, sizeof(float) * kNumberOfTransmitFrequencies);
+    }
+    
     NSArray *dataToSend = [self convertByteToBoolData:numberToSend];
     NSArray *frequencies = [self frequenciesUsedForTransmitting];
     NSLog(@"%@", dataToSend);
@@ -79,7 +94,6 @@ AudioPlayer *sharedPlayer;
     {
         if ([dataToSend[i] boolValue])
         {
-            //[tempFrequenciesToSend addObject:frequencies[i]];
             frequenciesToSend[i] = [frequencies[i] floatValue];
         }
         else
@@ -87,8 +101,26 @@ AudioPlayer *sharedPlayer;
             frequenciesToSend[i] = 0.0f;
         }
     }
+    
+    
+    /*double phaseShift = 0;
+    double dx = 1.0101e-8;
+    while(phaseShift < M_PI * 2)
+    {
+        double dy = ABS(audioFunction(M_PI * 2 * (self.t + phaseShift), frequenciesToSend) - oldValue);
+        if(dy < 0.002)
+        {
+            break;
+        }
+        phaseShift += dx;
+    }
+    
+    printf("Phase shift: %f\nTime: %f\n", phaseShift, self.t);
+    self.t += phaseShift;*/
+    
     self.frequenciesChanging = NO;
-    [self.transmitDelegate audioStartedTransmittingFrequencies:frequenciesToSend withSize:4];
+    interpVal = 0;
+    [self.transmitDelegate audioStartedTransmittingFrequencies:frequenciesToSend withSize:kNumberOfTransmitFrequencies];
 }
 
 - (void) transmitSequence:(NSArray *)sequence
@@ -239,14 +271,81 @@ AudioPlayer *sharedPlayer;
 }
 
 
+#define DEBUG_AUDIO_PLAYBACK 0
+double audioFunction(double t, float *frequenciesToSend)
+{
+#if DEBUG_AUDIO_PLAYBACK == 1
+    return sin(t * 587.33);
+#endif
+    
+    if(frequenciesToSend == NULL) return 0;
+    
+    double sum = 0.0;
+    double divisor = 0;
+    for (int i = 0; i < kNumberOfTransmitFrequencies; i++)
+    {
+        double freq = frequenciesToSend[i];
+        sum += sin(t * freq) * amplitudeAdjustments[i];
+        divisor += freq > 1 ? 1 : 0;
+    }
+    
+    if(divisor == 0)
+    {
+        return 0;
+    }
+    
+    return sum / divisor;
+}
+
+double audioFunctionInterp(double t, float *oldFreqs, float *newFreqs, float progress)
+{
+#if DEBUG_AUDIO_PLAYBACK == 1
+    return sin(t * 587.33);
+#endif
+    
+    if(oldFreqs == NULL || newFreqs == NULL) return 0;
+    
+    double sum = 0.0;
+    double divisor = 0;
+    for (int i = 0; i < kNumberOfTransmitFrequencies; i++)
+    {
+        double oldFreq = oldFreqs[i];
+        double newFreq = newFreqs[i];
+        double val = sin(t * oldFreq) * (1 - progress) + sin(t * newFreq) * progress;
+        
+        sum += val;
+        divisor += newFreq > 1 ? 1 : 0;
+    }
+    
+    if(divisor == 0)
+    {
+        return 0;
+    }
+    
+    return sum / divisor;
+}
+
+
 float amplitudeAdjustmentsIPadTransmit[] = {4.0, 4.0, 10.0, 20.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
 float amplitudeAdjustmentsITouchTransmit[] = {1.0, 1.0, 1.0, 1.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
 float *amplitudeAdjustments; // Set at runtime for specific device;
-#define DEBUG_AUDIO_PLAYBACK 0
+double interpVal = 0;
+double maxInterp = 15360.0;
+int currentFrame = 0;
+int callCount = 0;
+double maxCallCount = 14592.0;
+
+double rampUp = 0.2;
+double rampDown = 0.8;
+
 - (void) renderAudioIntoData:(Float32 *)data withSampleRate:(double)sampleRate numberOfFrames:(int)numberOfFrames
 {   
     if(self.isPlaying)
     {
+        callCount++;
+//        double maxCallCount = sampleRate * kTransmitInterval;
+//        printf("CALL COUNT: %f\n", callCount);
+        
         for (UInt32 frame = 0; frame < numberOfFrames; frame++)
         {
             if(frequenciesToSend == NULL || self.frequenciesChanging)
@@ -255,7 +354,6 @@ float *amplitudeAdjustments; // Set at runtime for specific device;
                 continue;
             }
             
-            float sum = 0.0f;
             self.t += 1.0 / sampleRate;
             double time = self.t * 2 * M_PI;
             
@@ -265,28 +363,59 @@ float *amplitudeAdjustments; // Set at runtime for specific device;
                 continue;
             }
             
-#if DEBUG_AUDIO_PLAYBACK == 1
-            data[frame] = sin(time * 587.33) * 10;
-            data[frame] += sin(time * 880);
-            continue;
-#endif
-
-            float divisor = 0;
-            for (int i = 0; i < kNumberOfTransmitFrequencies; i++)
+            /*if(interpVal <= maxInterp)
             {
-                double freq = frequenciesToSend[i];
-                sum += sin(time * freq) * amplitudeAdjustments[i];
-                divisor += freq > 1 ? 1 : 0;
+                double progress = MIN(interpVal / maxInterp, 1.0);
+                if(progress > 0.98)
+                {
+                    printf("Progress: %f\n", progress);
+                }
+                //data[frame] = progress * audioFunction(time, frequenciesToSend) + (1.0-progress)*audioFunction(time, oldTransmittingFrequencies);
+                data[frame] = audioFunctionInterp(time, oldTransmittingFrequencies, frequenciesToSend, progress);
+                interpVal += 1.0;
             }
-            
-            if(divisor == 0)
+            else
             {
-                data[frame] = 0;
-                continue;
-            }
+                data[frame] = audioFunction(time, frequenciesToSend);
+            }*/
             
-            sum /= divisor;
-            data[frame] = sum;
+            double progress = (double) (currentFrame / (double) maxCallCount);
+            double ramp = 0.0;
+            if (progress <= rampUp)
+            {
+                ramp = progress / rampUp;
+            }
+            else if(progress > rampUp && progress <= rampDown)
+            {
+                ramp = 1.0;
+            }
+            else
+            {
+                ramp = 1.0 - (progress - rampDown) / (1.0 - rampDown);
+            }
+            ramp = MIN(ramp, 1.0);
+            ramp = MAX(ramp, 0.0);
+            
+//            printf("%i\n", currentFrame);
+            data[frame] = audioFunction(time, frequenciesToSend) * ramp;
+            currentFrame++;
+//            float sum = 0.0f;
+//            float divisor = 0;
+//            for (int i = 0; i < kNumberOfTransmitFrequencies; i++)
+//            {
+//                double freq = frequenciesToSend[i];
+//                sum += sin(time * freq) * amplitudeAdjustments[i];
+//                divisor += freq > 1 ? 1 : 0;
+//            }
+//            
+//            if(divisor == 0)
+//            {
+//                data[frame] = 0;
+//                continue;
+//            }
+//            
+//            sum /= divisor;
+//            data[frame] = sum;
         }
     }
 }

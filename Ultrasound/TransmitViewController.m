@@ -15,7 +15,6 @@
 @property (weak, nonatomic) IBOutlet GraphView *graphView;
 @property (nonatomic) float *oldTransmittingFrequencies;
 @property (nonatomic) float *currentlyTransmittingFrequencies;
-@property (nonatomic) float *interpFrequencies;
 
 @property (nonatomic, strong) NSTimer *phaseShiftTimer;
 @end
@@ -64,12 +63,6 @@
 }
 - (void) audioStartedTransmittingFrequencies:(float *)freqs withSize:(int)size
 {
-    if(self.interpFrequencies != NULL)
-    {
-        free(self.interpFrequencies);
-    }
-    self.interpFrequencies = malloc(sizeof(float) * size);
-    
     if(self.currentlyTransmittingFrequencies != NULL)
     {
         if(self.oldTransmittingFrequencies != NULL)
@@ -143,38 +136,26 @@
     [_graphView applyStandardSinkStyleNoRounding];
 }
 
-//#define kTransmitFrequencies @[@17980, @18174, @18605, @19509]
 float t = 0;
 - (double) valueForXCoord:(double)x withIndex:(int)graphIndex graphView:(GraphView *)view
 {
-    if (self.interpFrequencies == NULL)
+    if (!self.oldTransmittingFrequencies || !self.currentlyTransmittingFrequencies)
     {
         return 0;
     }
     
     float timeSinceUpdate = CACurrentMediaTime() - lastUpdateT;
-    float progress = timeSinceUpdate / 0.4;
-    
+    float progress = MIN(timeSinceUpdate / kTransmitInterval, 1.0);
     double time = 2.0 * M_PI * (x + t);
-    //return sin(17980.0 * time) + sin(18174.0 * time);
     float sum = 0;
-    float divisor = 0;
     for (int i = 0; i < kNumberOfTransmitFrequencies; i++)
     {
         float oldFreq = self.oldTransmittingFrequencies != NULL ? self.oldTransmittingFrequencies[i] : self.currentlyTransmittingFrequencies[i];
         float newFreq = self.currentlyTransmittingFrequencies[i];
-        float val = sin(time * oldFreq) * (1-progress) + sin(time * newFreq) * progress;
+        float val = sin(time * oldFreq) * (1 - progress) + sin(time * newFreq) * progress;
 
         sum += val;
-        //divisor += freq > 1 ? 1 : 0;
     }
-    
-    /*if(divisor == 0)
-    {
-        return 0;
-    }*/
-    
-    //sum /= divisor;
     
     return sum;
 }
@@ -189,18 +170,6 @@ BOOL justUpdated = NO;
     {
         justUpdated = NO;
         lastUpdateT = CACurrentMediaTime();
-    }
-    
-    if(self.interpFrequencies != NULL)
-    {
-        float timeSinceUpdate = CACurrentMediaTime() - lastUpdateT;
-        float progress = timeSinceUpdate / 0.4;
-        for(int i = 0; i < kNumberOfTransmitFrequencies; i++)
-        {
-            float old = self.oldTransmittingFrequencies != NULL ? self.oldTransmittingFrequencies[i] : self.currentlyTransmittingFrequencies[i];
-            float new = self.currentlyTransmittingFrequencies[i];
-            self.interpFrequencies[i] = old * (1-progress) + new * progress;
-        }
     }
     
     [self.graphView generateBitmapAndRedraw];

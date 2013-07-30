@@ -2,6 +2,10 @@
 #import <Foundation/Foundation.h>
 #import "AudioManager.h"
 
+
+#define kFFTInterval 0.02
+#define kTransmitInterval 0.4
+
 @protocol AudioPlayerReceiveDelegate <NSObject>
 
 - (void) audioReceivedDataUpdate:(int)data;
