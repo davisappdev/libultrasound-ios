@@ -11,8 +11,9 @@
 @interface GraphView : UIView
 
 @property (nonatomic, weak) id <GraphViewDataSource> dataSource;
+@property (nonatomic) float minRedrawInterval;
 - (void) setupInitialTransforms;
-- (void) generateBitmap;
+- (void) generateBitmapAndRedraw;
 
 
 // Methods to override

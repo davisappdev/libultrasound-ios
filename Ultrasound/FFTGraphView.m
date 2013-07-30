@@ -18,7 +18,7 @@
     trans.translation.y = 0;
     
     trans.scale.x = self.frame.size.width / 6000.0;
-    trans.scale.y = self.frame.size.height / 200.0;
+    trans.scale.y = self.frame.size.height / 100.0;
     
     return trans;
 }

@@ -6,12 +6,14 @@
 
 - (void) audioReceivedDataUpdate:(int)data;
 - (void) audioReceivedText:(NSString *) text;
+- (void) audioReceivedFFTData:(float *)data arraySize:(int)size cutoff:(float)cutoff;
 
 @end
 
 @protocol AudioPlayerTransmitDelegate <NSObject>
 
-- (void) audioStartedTransmittingSequence;
+- (void) audioStartedTransmittingSequence: (float *) freqs withSize: (int) size;
+- (void) audioStartedTransmittingFrequencies:(float *) freqs withSize:(int) size;
 - (void) audioFinishedTransmittingSequence;
 
 @end

@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "CardIO.h"
 #import "AudioPlayer.h"
+#import "GraphView.h"
 
-@interface TransmitViewController : UIViewController <UITextFieldDelegate, CardIOPaymentViewControllerDelegate, AudioPlayerTransmitDelegate>
+@interface TransmitViewController : UIViewController <UITextFieldDelegate, CardIOPaymentViewControllerDelegate, AudioPlayerTransmitDelegate, GraphViewDataSource>
 
 @end

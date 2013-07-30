@@ -81,6 +81,7 @@
 - (void) setupInitialTransforms
 {
     self.transforms = [self initialTransforms];
+    self.minRedrawInterval = 0.4;
 }
 
 
@@ -179,25 +180,6 @@
     UIGraphicsPopContext();
 }
 
-- (void) drawBorder: (CGContextRef) ref
-{
-    UIGraphicsPushContext(ref);
-    
-    CGContextBeginPath(ref);
-    
-    CGContextMoveToPoint(ref, 0, 0);
-    CGContextAddLineToPoint(ref, self.frame.size.width, 0);
-    CGContextAddLineToPoint(ref, self.frame.size.width, self.frame.size.height);
-    CGContextAddLineToPoint(ref, 0, self.frame.size.height);
-    CGContextAddLineToPoint(ref, 0, 0);
-
-    CGContextSetLineWidth(ref, 2.0f);
-    
-    CGContextDrawPath(ref, kCGPathStroke); // Done drawing each grid line
-    
-    UIGraphicsPopContext();
-
-}
 
 bool hadRecentNan;
 - (void) drawGraph:(CGContextRef) c withIndex:(int)index
@@ -205,7 +187,7 @@ bool hadRecentNan;
     UIGraphicsPushContext(c);
     CGContextBeginPath(c);
     
-    for(int i = 0 ; i <= self.frame.size.width; i+=4)
+    for(int i = 0 ; i <= self.frame.size.width; i++)
     {
         CGPoint convertedToCart = [GraphViewUtils convertPixelToCartesian:CGPointMake(i, 0) withTransforms:self.transforms];
         convertedToCart.y = [self.dataSource valueForXCoord:convertedToCart.x withIndex:index graphView:self];
@@ -281,8 +263,6 @@ bool hadRecentNan;
 {
     [self drawGraph:c withIndex:0];
     [self drawGraph:c withIndex:1];
-    [self drawGraph:c withIndex:2];
-    [self drawGraph:c withIndex:3];
 }
 
 - (void) drawCachedFunctionImage:(CGContextRef)c
@@ -316,9 +296,9 @@ bool hadRecentNan;
 - (void)drawRect:(CGRect)rect
 {
     //self.translations.y = -(self.frame.size.height / 2.0) / output.scale.y;
-    Transforms transforms = self.transforms;
-    transforms.translation.y = (self.frame.size.height / 2.0) / self.transforms.scale.y;
-    self.transforms = transforms;
+//    Transforms transforms = self.transforms;
+//    transforms.translation.y = (self.frame.size.height / 2.0) / self.transforms.scale.y;
+//    self.transforms = transforms;
     
     CGContextRef c = UIGraphicsGetCurrentContext();
     
@@ -326,20 +306,22 @@ bool hadRecentNan;
     CGContextSetStrokeColor(c, colors);
     CGContextSetFillColor(c, colors);
 
-    
     CGPoint spacing = [self tickMarkSpacing];
     [self drawGrid:c withXIncrement:spacing.x withYIncrement:spacing.y];
-    [self drawBorder:c];
-    
-    
+
     [self drawCachedFunctionImage:c];
 }
 
 
 - (void) generateBitmapAndRedraw
 {
-    [self generateBitmap];
-    [self setNeedsDisplay];
+    NSTimeInterval currentTime = CACurrentMediaTime();
+    
+    if(currentTime - self.lastBitmapGenerationTime >= self.minRedrawInterval)
+    {
+        [self generateBitmap];
+        [self setNeedsDisplay];
+    }
 }
 
 
@@ -347,13 +329,14 @@ bool hadRecentNan;
 {
     NSTimeInterval currentTime = CACurrentMediaTime();
     
-    if(currentTime - self.lastBitmapGenerationTime >= 1.0)
+    if(currentTime - self.lastBitmapGenerationTime >= self.minRedrawInterval)
     {
         CGImageRelease(offscreenImage);
         void *data;
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
         CGContextRef bitmapContext = createBitmapContext((int)self.frame.size.width, (int)self.frame.size.height, &data);
         [self drawAllFunctions:bitmapContext];
+
         offscreenImage = CGBitmapContextCreateImage(bitmapContext);
         CGColorSpaceRelease(colorSpace);
         CFRelease(bitmapContext);
@@ -366,7 +349,7 @@ bool hadRecentNan;
     }
     else
     {
-        [self performSelector:@selector(generateBitmapAndRedraw) withObject:nil afterDelay:1.0];
+//        [self performSelector:@selector(generateBitmapAndRedraw) withObject:nil afterDelay:1.0];
     }
 }
 

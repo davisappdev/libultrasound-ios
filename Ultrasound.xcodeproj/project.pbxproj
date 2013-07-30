@@ -15,6 +15,8 @@
 		361B1A04165AF15100BC19CB /* SpectrumAnalysis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 361B1A00165AF15100BC19CB /* SpectrumAnalysis.cpp */; };
 		362C2AC8178E1C7900748B41 /* ProcessingFunctionsC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 362C2AC7178E1C7900748B41 /* ProcessingFunctionsC.cpp */; };
 		363EA613178E196200A27151 /* ProcessingFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 36791C1E17879361002681B7 /* ProcessingFunctions.m */; };
+		363F2C7617A71B48000A249A /* UIView+Donald.m in Sources */ = {isa = PBXBuildFile; fileRef = 363F2C7517A71B47000A249A /* UIView+Donald.m */; };
+		363F2C7917A72812000A249A /* TransmitGraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 363F2C7817A72811000A249A /* TransmitGraphView.m */; };
 		366FDD8A178F4F440095C1A1 /* libCardIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 366FDD89178F4F440095C1A1 /* libCardIO.a */; };
 		366FDD8C178F4FA40095C1A1 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 366FDD8B178F4FA40095C1A1 /* AVFoundation.framework */; };
 		366FDD8E178F4FAF0095C1A1 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 366FDD8D178F4FAF0095C1A1 /* CoreMedia.framework */; };
@@ -82,6 +84,10 @@
 		361B1A00165AF15100BC19CB /* SpectrumAnalysis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpectrumAnalysis.cpp; sourceTree = "<group>"; };
 		362C2AC6178E1C5500748B41 /* ProcessingFunctionsC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProcessingFunctionsC.h; sourceTree = "<group>"; };
 		362C2AC7178E1C7900748B41 /* ProcessingFunctionsC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProcessingFunctionsC.cpp; sourceTree = "<group>"; };
+		363F2C7417A71B47000A249A /* UIView+Donald.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Donald.h"; sourceTree = "<group>"; };
+		363F2C7517A71B47000A249A /* UIView+Donald.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Donald.m"; sourceTree = "<group>"; };
+		363F2C7717A72811000A249A /* TransmitGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransmitGraphView.h; sourceTree = "<group>"; };
+		363F2C7817A72811000A249A /* TransmitGraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransmitGraphView.m; sourceTree = "<group>"; };
 		366FDD85178F4F440095C1A1 /* CardIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardIO.h; sourceTree = "<group>"; };
 		366FDD86178F4F440095C1A1 /* CardIOCreditCardInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardIOCreditCardInfo.h; sourceTree = "<group>"; };
 		366FDD87178F4F440095C1A1 /* CardIOPaymentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardIOPaymentViewController.h; sourceTree = "<group>"; };
@@ -306,6 +312,8 @@
 				36F70B9617A33B190028228B /* ReceiveViewController.h */,
 				36F70B9717A33B190028228B /* ReceiveViewController.m */,
 				36B750D8161693A700A6ED3B /* Supporting Files */,
+				363F2C7417A71B47000A249A /* UIView+Donald.h */,
+				363F2C7517A71B47000A249A /* UIView+Donald.m */,
 			);
 			path = Ultrasound;
 			sourceTree = "<group>";
@@ -355,6 +363,8 @@
 				36F70B9E17A347FA0028228B /* GraphViewUtils.m */,
 				36F70BA117A34E0F0028228B /* FFTGraphView.h */,
 				36F70BA217A34E0F0028228B /* FFTGraphView.m */,
+				363F2C7717A72811000A249A /* TransmitGraphView.h */,
+				363F2C7817A72811000A249A /* TransmitGraphView.m */,
 			);
 			name = Graphing;
 			sourceTree = "<group>";
@@ -404,7 +414,7 @@
 		36B750C4161693A700A6ED3B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = AppDev;
 			};
 			buildConfigurationList = 36B750C7161693A700A6ED3B /* Build configuration list for PBXProject "Ultrasound" */;
@@ -487,9 +497,11 @@
 				36F70B9817A33B190028228B /* ReceiveViewController.m in Sources */,
 				361B19FA165AF09A00BC19CB /* FFTBufferManager.cpp in Sources */,
 				361B1A01165AF15100BC19CB /* rad2fft.c in Sources */,
+				363F2C7617A71B48000A249A /* UIView+Donald.m in Sources */,
 				361B1A03165AF15100BC19CB /* SpectrumAnalysis.cpp in Sources */,
 				36CC7AEE1784E49E004E0127 /* Processor.m in Sources */,
 				36791C1C178792BC002681B7 /* ProcessAlgoMain.m in Sources */,
+				363F2C7917A72812000A249A /* TransmitGraphView.m in Sources */,
 				36791C2317879361002681B7 /* Clump.m in Sources */,
 				363EA613178E196200A27151 /* ProcessingFunctions.m in Sources */,
 			);
@@ -581,6 +593,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

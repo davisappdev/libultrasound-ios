@@ -7,11 +7,15 @@
 //
 
 #import "ReceiveViewController.h"
+#import "AudioManager.h"
+#import "UIView+Donald.h"
 
 @interface ReceiveViewController ()
 @property (nonatomic, strong) AudioPlayer *player;
 @property (weak, nonatomic) IBOutlet UILabel *receivedStringLabel;
 @property (weak, nonatomic) IBOutlet GraphView *graphView;
+@property (nonatomic) float *copiedFFTData;
+@property (nonatomic) float copiedCutoff;
 @end
 
 @implementation ReceiveViewController
@@ -23,6 +27,8 @@
     
     self.player = [AudioPlayer sharedAudioPlayer];
     self.player.receiveDelegate = self;
+    
+//    [self.containerView applyStandardSinkStyle];
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -51,6 +57,21 @@
     self.receivedStringLabel.text = text;
 }
 
+- (void) audioReceivedFFTData:(float *)data arraySize:(int)size cutoff:(float)cutoff
+{
+    if(self.copiedFFTData != NULL)
+    {
+        free(self.copiedFFTData);
+    }
+    
+    self.copiedFFTData = malloc(sizeof(float) * size);
+    memcpy(self.copiedFFTData, data, sizeof(float) * size);
+    
+    self.copiedCutoff = cutoff;
+    
+    [self.graphView generateBitmapAndRedraw];
+}
+
 
 
 #pragma mark - Graph Stuff
@@ -60,21 +81,27 @@
     _graphView = graphView;
     _graphView.dataSource = self;
     
-    UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:_graphView action:@selector(handlePinch:)];
-    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:_graphView action:@selector(handlePan:)];
-    pan.maximumNumberOfTouches = 1;
-    pan.minimumNumberOfTouches = 1;
-    
-    
-    [_graphView addGestureRecognizer:pinch];
-    [_graphView addGestureRecognizer:pan];
-    
     [_graphView setupInitialTransforms];
+    
+    [_graphView applyStandardSinkStyleNoRounding];
 }
 
-- (double) valueForXCoord:(double)x withIndex:(int)index graphView:(GraphView *)view
+- (double) valueForXCoord:(double)x withIndex:(int)graphIndex graphView:(GraphView *)view
 {
-    return 2;
+    if(graphIndex == 0)
+    {
+        if(self.copiedFFTData == NULL || x >= 22000)
+        {
+            return 0;
+        }
+        
+        int index = round(x / kRatio);
+        return self.copiedFFTData[index];
+    }
+    else
+    {
+        return self.copiedCutoff;
+    }
 }
 
 

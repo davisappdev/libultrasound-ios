@@ -187,7 +187,6 @@ float delimCutoff;
 
 
 #define CLAMP(min,x,max) (x < min ? min : (x > max ? max : x))
-#define kRatio (21.533203125)
 
 void printFFT(float *fftData)
 {
@@ -306,6 +305,8 @@ void printFFTStuff(int32_t *fftData)
     double maxValue = maxValueForArray(storedFFTData, minIndex, maxIndex);
     double cutoffValue = maxValue - (standardDeviation * 3);
     cutoffValue = MIN(cutoffValue, 20);
+    
+    [self.delegate fftData:storedFFTData arraySize:maxY-1 cutoff:cutoffValue];
     
 //    printf("AVG: %f\n", averageValueInUltraSonicRange);
 //    printf("Cutoff Value: %f\n", cutoffValue);

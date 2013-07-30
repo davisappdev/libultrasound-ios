@@ -88,12 +88,13 @@ AudioPlayer *sharedPlayer;
         }
     }
     self.frequenciesChanging = NO;
+    [self.transmitDelegate audioStartedTransmittingFrequencies:frequenciesToSend withSize:4];
 }
 
 - (void) transmitSequence:(NSArray *)sequence
 {
     NSLog(@"Transmitted nibble sequence: %@", sequence);
-    [self.transmitDelegate audioStartedTransmittingSequence];
+    [self.transmitDelegate audioStartedTransmittingSequence:frequenciesToSend withSize:kNumberOfTransmitFrequencies];
 
     __weak AudioPlayer *weakSelf = self;
     [self transmitPacketDelimiterWithCallback:^{
@@ -288,7 +289,11 @@ float *amplitudeAdjustments; // Set at runtime for specific device;
             data[frame] = sum;
         }
     }
+}
 
+- (void) fftData:(float *)data arraySize:(int)size cutoff:(float)cutoff
+{
+    [self.receiveDelegate audioReceivedFFTData:data arraySize:size cutoff:cutoff];
 }
 
 - (NSArray *) convertByteToBoolData:(Byte) byte
