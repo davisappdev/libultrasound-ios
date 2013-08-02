@@ -82,6 +82,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Transmit" id="boU-X7-PdQ"/>
                     <connections>
+                        <outlet property="dataToTransmitField" destination="exH-qg-nYn" id="xNI-SQ-FGk"/>
                         <outlet property="graphView" destination="jMX-64-LBm" id="GhZ-wh-BlZ"/>
                     </connections>
                 </viewController>

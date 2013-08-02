@@ -284,7 +284,7 @@ float amplitudeAdjustmentsITouchTransmit[] = {1.0, 1.0, 1.0, 1.0}; // Arbitrary 
 float *amplitudeAdjustments; // Set at runtime for specific device;
 
 int currentFrame = 0;
-double maxCallCount = 14592.0;
+double maxCallCount = 14592.0 * (kTransmitInterval / 0.4);
 
 double rampUp = 0.2;
 double rampDown = 0.8;

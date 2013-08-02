@@ -53,7 +53,7 @@
     
     if(distanceClumps.count == 0)
     {
-        return 20;
+        return 30.0;
     }
     
     // Find the clump whose average is closest to the experimentally determined splitting value of 30
@@ -62,7 +62,7 @@
     for (int i = 0; i < distanceClumps.count; i++)
     {
         double average = [distanceClumps[i] average];
-        double diff = abs(average - 20.0);
+        double diff = abs(average - 30.0);
         if (diff < minDiff)
         {
             minDiff = diff;

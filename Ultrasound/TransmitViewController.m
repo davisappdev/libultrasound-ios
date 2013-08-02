@@ -10,13 +10,18 @@
 #import "Processor.h"
 #import "UIView+Donald.h"
 
+#define kTestString @"test string"
+#define kTestCount 10
+
 @interface TransmitViewController ()
 @property (nonatomic, strong) AudioPlayer *player;
 @property (weak, nonatomic) IBOutlet GraphView *graphView;
 @property (nonatomic) float *oldTransmittingFrequencies;
 @property (nonatomic) float *currentlyTransmittingFrequencies;
-
+@property (weak, nonatomic) IBOutlet UITextField *dataToTransmitField;
 @property (nonatomic, strong) NSTimer *phaseShiftTimer;
+
+@property (nonatomic) int testTransmissionCount;
 @end
 
 @implementation TransmitViewController
@@ -28,6 +33,10 @@
     self.player = [AudioPlayer sharedAudioPlayer];
     self.player.isReceiving = NO;
     self.player.transmitDelegate = self;
+    
+    
+    NSLog(@"Test nibbles: %@", [Processor encodeString:kTestString]);
+    self.dataToTransmitField.text = kTestString;
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -48,9 +57,23 @@
 - (void) audioFinishedTransmittingSequence
 {
     self.tabBarController.tabBar.userInteractionEnabled = YES;
-    self.tabBarController.tabBar.tintColor = self.view.tintColor;
+//    self.tabBarController.tabBar.tintColor = self.view.tintColor;
     
     [self.phaseShiftTimer invalidate];
+    
+    double delayInSeconds = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        if(self.testTransmissionCount < kTestCount - 1)
+        {
+            self.testTransmissionCount++;
+            [self textFieldDidEndEditing:self.dataToTransmitField];
+        }
+        else
+        {
+            self.testTransmissionCount = 0;
+        }
+    });
 }
 - (void) audioStartedTransmittingSequence: (float *) freqs withSize: (int) size
 {
@@ -122,7 +145,7 @@
     NSLog(@"Received card info. Number: %@, type:%i", info.cardNumber, info.cardType);
     // Use the card info...
     [scanViewController dismissViewControllerAnimated:YES completion:^{
-        [self.player transmitString:info.cardNumber];
+        self.dataToTransmitField.text = info.cardNumber;
     }];
 }
 

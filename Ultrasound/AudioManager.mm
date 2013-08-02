@@ -304,7 +304,7 @@ void printFFTStuff(int32_t *fftData)
     double standardDeviation = meanlessStandardDeviation(storedFFTData, minIndex, maxIndex);
     double maxValue = maxValueForArray(storedFFTData, minIndex, maxIndex);
     double cutoffValue = maxValue - (standardDeviation * 3);
-    cutoffValue = MIN(cutoffValue, 20);
+    cutoffValue = MIN(cutoffValue, 40);
     
     [self.delegate fftData:storedFFTData arraySize:maxY-1 cutoff:cutoffValue];
     
