@@ -8,6 +8,8 @@
 
 #import "UltrasoundTests.h"
 #import "Processor.h"
+#include "ProcessingFunctionsC.h"
+#import "NSArray+Levenshtein.h"
 
 @implementation UltrasoundTests
 
@@ -54,6 +56,23 @@
     }
 }
 
+- (void) testEncryption
+{
+    NSString *plainText = @"Hello, world";
+    NSString *key = @"asdfsdfadf";
+    NSArray *encryptedData = [Processor encodeStringAndEncrypt:plainText withKey:key];
+    NSString *plainData = [Processor decodeDataAndDecrypt:encryptedData withKey:key];
+    STAssertEqualObjects(plainText, plainData, @"Encrypted and decrypted strings are not the same");
+}
+
+- (void) testPercentError
+{
+    NSArray *correct = @[@5, @9, @8, @2, @3, @9];
+    NSArray *received = @[@5, @8, @2, @2, @3, @9, @3, @2];
+    double error = [correct percentErrorToReceivedArray:received];
+    
+    STAssertEqualsWithAccuracy(error, 4.0/6.0, 0.001, @"The error should equal 4/6, 0.6666");
+}
 
 
 @end

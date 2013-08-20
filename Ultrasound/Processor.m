@@ -8,6 +8,8 @@
 
 #import "Processor.h"
 #import "ProcessAlgoMain.h"
+#import "NSData+AES256.h"
+
 //#define kNumberLength 25.0
 
 @implementation Processor
@@ -51,7 +53,7 @@
         }
         
         NSMutableArray *subData = [NSMutableArray array];
-        printf("Start sub data: %i\nEnd sub data:%i\n", i, (int)(i + increment - 1));
+        //printf("Start sub data: %i\nEnd sub data:%i\n", i, (int)(i + increment - 1));
         for (int j = i; j < i + increment - 1; j++)
         {
             [subData addObject:packetData[j]];
@@ -154,8 +156,8 @@
 {
     if(nibbles.count % 2 == 1)
     {
-        NSLog(@"Odd data length... padding nibbles with a zero!");
-        nibbles = [nibbles arrayByAddingObject:@(0)];
+        NSLog(@"Odd data length... returning nil!");
+        return nil;
     }
     
     NSMutableArray *bytes = [NSMutableArray arrayWithCapacity:nibbles.count / 2];
@@ -187,7 +189,30 @@
 }
 
 
++ (NSData*) encryptString:(NSString*)plaintext withKey:(NSString*)key
+{
+	return [[plaintext dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptWithKey:key];
+}
+
 // Fun debug encoding
++ (NSArray *) encodeStringAndEncrypt:(NSString *)string withKey:(NSString *) key
+{
+    NSData *cipher = [self encryptString: string withKey: key];
+    NSUInteger len = [cipher length];
+    Byte *byteData = (Byte*) malloc(len);
+    memcpy(byteData, [cipher bytes], len);
+    
+    NSMutableArray *bytes = [NSMutableArray arrayWithCapacity:string.length];
+    for (int i = 0; i < len; i++)
+    {
+        [bytes addObject:@(byteData[i])];
+    }
+    
+    free(byteData);
+    
+    return [self splitByteArrayIntoNibbleArray:bytes];
+}
+
 + (NSArray *) encodeString:(NSString *)string
 {
     NSMutableArray *bytes = [NSMutableArray arrayWithCapacity:string.length];
@@ -203,6 +228,7 @@
 + (NSString *) decodeData:(NSArray *)data
 {
     NSArray *bytes = [self combineNibbleArrayToByteArray:data];
+    if(!bytes) return nil;
     
     NSMutableString *string = [NSMutableString string];
     for(int i = 0; i < bytes.count; i++)
@@ -212,6 +238,27 @@
     }
     
     return [string copy];
+}
+
++ (NSString*) decryptData:(NSData*)ciphertext withKey:(NSString*)key
+{
+	return [[NSString alloc] initWithData:[ciphertext AES256DecryptWithKey:key] encoding:NSUTF8StringEncoding];
+}
+
++ (NSString *) decodeDataAndDecrypt:(NSArray *)data withKey:(NSString *) key
+{
+    NSArray *bytes = [self combineNibbleArrayToByteArray:data];
+    Byte *buffer = malloc(sizeof(Byte) * bytes.count);
+    for (int i = 0; i < bytes.count; i++)
+    {
+        buffer[i] = [bytes[i] intValue];
+    }
+    
+    NSData *cipher = [NSData dataWithBytes:buffer length:bytes.count];
+    NSString *plainText = [self decryptData:cipher withKey:key];
+    free(buffer);
+    
+    return plainText;
 }
 
 @end

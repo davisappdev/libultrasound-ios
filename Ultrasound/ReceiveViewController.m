@@ -9,6 +9,8 @@
 #import "ReceiveViewController.h"
 #import "AudioManager.h"
 #import "UIView+Donald.h"
+#import "Processor.h"
+#import "NSArray+Levenshtein.h"
 
 @interface ReceiveViewController ()
 @property (nonatomic, strong) AudioPlayer *player;
@@ -16,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet GraphView *graphView;
 @property (nonatomic) float *copiedFFTData;
 @property (nonatomic) float copiedCutoff;
+@property (nonatomic) NSString *testString;
 @end
 
 @implementation ReceiveViewController
@@ -27,7 +30,7 @@
     
     self.player = [AudioPlayer sharedAudioPlayer];
     self.player.receiveDelegate = self;
-    
+
 //    [self.containerView applyStandardSinkStyle];
 }
 
@@ -54,12 +57,22 @@
 
 - (void) audioReceivedText:(NSString *)text
 {
-    self.receivedStringLabel.text = text;
+    if (text == nil)
+    {
+        self.receivedStringLabel.text = @"nil";
+    }
+    else
+    {
+        self.receivedStringLabel.text = text;
+        // Nibbles we received
+//        NSLog(@"Received: %@\n\nShould have received: %@", nibbles, correctNibbles);
+        
+    }
 }
 
 - (void) audioReceivedFFTData:(float *)data arraySize:(int)size cutoff:(float)cutoff
 {
-    if(self.copiedFFTData != NULL)
+    /*if(self.copiedFFTData != NULL)
     {
         free(self.copiedFFTData);
     }
@@ -69,7 +82,7 @@
     
     self.copiedCutoff = cutoff;
     
-    [self.graphView generateBitmapAndRedraw];
+    [self.graphView generateBitmapAndRedraw];*/
 }
 
 
@@ -79,7 +92,7 @@
 - (void) setGraphView:(GraphView *)graphView
 {
     _graphView = graphView;
-    _graphView.dataSource = self;
+    //_graphView.dataSource = self;
     
     [_graphView setupInitialTransforms];
     

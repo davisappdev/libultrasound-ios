@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4488.1" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="BfY-xd-JMW">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4488.2" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="BfY-xd-JMW">
     <dependencies>
         <deployment defaultVersion="1552" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3715.3"/>
@@ -57,7 +57,7 @@
                                     <action selector="cameraPressed:" destination="AjS-iD-Vhn" eventType="touchUpInside" id="EdD-gI-J1P"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jMX-64-LBm" customClass="TransmitGraphView">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jMX-64-LBm" customClass="TransmitGraphView">
                                 <rect key="frame" x="20" y="109" width="280" height="302"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -83,7 +83,6 @@
                     <tabBarItem key="tabBarItem" title="Transmit" id="boU-X7-PdQ"/>
                     <connections>
                         <outlet property="dataToTransmitField" destination="exH-qg-nYn" id="xNI-SQ-FGk"/>
-                        <outlet property="graphView" destination="jMX-64-LBm" id="GhZ-wh-BlZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UWt-FA-XIb" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -140,7 +139,7 @@
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mf2-iJ-yZj" customClass="FFTGraphView">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mf2-iJ-yZj" customClass="FFTGraphView">
                                 <rect key="frame" x="20" y="131" width="280" height="280"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -174,7 +173,6 @@
                     <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <tabBarItem key="tabBarItem" title="Receive" id="HBs-tF-b4D"/>
                     <connections>
-                        <outlet property="graphView" destination="mf2-iJ-yZj" id="Fyo-wD-XxT"/>
                         <outlet property="receivedStringLabel" destination="eCb-KD-qJi" id="ybM-mR-fFc"/>
                     </connections>
                 </viewController>

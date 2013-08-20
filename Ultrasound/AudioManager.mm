@@ -163,7 +163,7 @@ float delimCutoff;
         self.delegate = delegate;
         
         globalSelf = self;
-        delimCutoff = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 25 : 80;
+        delimCutoff = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 25 : 30;
         
         OSStatus result = AudioSessionInitialize(NULL, NULL, ToneInterruptionListener, (__bridge void *)(self));
         if (result == kAudioSessionNoError)

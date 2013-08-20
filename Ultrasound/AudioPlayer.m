@@ -8,7 +8,7 @@
 
 #import "AudioPlayer.h"
 #import "Processor.h"
-
+#import "NSArray+Levenshtein.h"
 
 @interface AudioPlayer ()
 {
@@ -33,6 +33,8 @@
 
 @property (nonatomic) BOOL recentlyDelimited;
 @property (nonatomic) BOOL hasHeardPacketDelimiter;
+
+@property (nonatomic, strong) NSString *testString;
 @end
 
 @implementation AudioPlayer
@@ -100,27 +102,46 @@ AudioPlayer *sharedPlayer;
         }
     }
     
+    r0 = arc4random();
+    r1 = arc4random();
+    
     self.frequenciesChanging = NO;
     [self.transmitDelegate audioStartedTransmittingFrequencies:frequenciesToSend withSize:kNumberOfTransmitFrequencies];
 }
 
+BOOL first = YES;
 - (void) transmitSequence:(NSArray *)sequence
 {
     NSLog(@"Transmitted nibble sequence: %@", sequence);
     [self.transmitDelegate audioStartedTransmittingSequence:frequenciesToSend withSize:kNumberOfTransmitFrequencies];
 
-    __weak AudioPlayer *weakSelf = self;
-    [self transmitPacketDelimiterWithCallback:^{
-        weakSelf.sequenceIndex = 0;
-        weakSelf.transmitTimer = [NSTimer timerWithTimeInterval:kTransmitInterval target:weakSelf selector:@selector(updateTransmitSequence:) userInfo:sequence repeats:YES];
-        [[NSRunLoop mainRunLoop] addTimer:weakSelf.transmitTimer forMode:NSRunLoopCommonModes];
+    if(first)
+    {
+        __weak AudioPlayer *weakSelf = self;
+        [self transmitPacketDelimiterWithCallback:^{
+            weakSelf.sequenceIndex = 0;
+            weakSelf.transmitTimer = [NSTimer timerWithTimeInterval:kTransmitInterval target:weakSelf selector:@selector(updateTransmitSequence:) userInfo:sequence repeats:YES];
+            [[NSRunLoop mainRunLoop] addTimer:weakSelf.transmitTimer forMode:NSRunLoopCommonModes];
+            
+            [weakSelf updateTransmitSequence:weakSelf.transmitTimer];
+        }];
+        first = NO;
+    }
+    else
+    {
+        self.sequenceIndex = 0;
+        self.transmitTimer = [NSTimer timerWithTimeInterval:kTransmitInterval target:self selector:@selector(updateTransmitSequence:) userInfo:sequence repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:self.transmitTimer forMode:NSRunLoopCommonModes];
         
-        [weakSelf updateTransmitSequence:weakSelf.transmitTimer];
-    }];
+        [self updateTransmitSequence:self.transmitTimer];
+    }
 }
 
 - (void) transmitString:(NSString *)string
 {
+    // Encrypt string using key
+    NSString *key = @"my key";
+//    NSArray *nibbles = [Processor encodeStringAndEncrypt:string withKey:key];
     NSArray *nibbles = [Processor encodeString:string];
     [self transmitSequence:nibbles];
 }
@@ -133,7 +154,7 @@ AudioPlayer *sharedPlayer;
         [self.transmitTimer invalidate];
         [self transmitPacketDelimiterWithCallback:^{
             [self.transmitDelegate audioFinishedTransmittingSequence];
-            [self stop];
+//            [self stop];
         }];
         return;
     }
@@ -162,11 +183,20 @@ AudioPlayer *sharedPlayer;
         
         frequenciesToSend = malloc(sizeof(float) * kNumberOfTransmitFrequencies);
         self.receivedPacketData = [[NSMutableArray alloc] init];
+        
+        
+        
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"Test Strings" ofType:@"plist"];
+        NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path];
+        self.testString = dict[@"transmitString"];
     }
     
     return self;
 }
 
+
+double err_s = 0.0;
+int err_c = 0;
 
 - (void) getTransmittedData
 {
@@ -176,16 +206,43 @@ AudioPlayer *sharedPlayer;
     {
         NSLog(@"Processing packet");
         
-        // Print out collected packet
-        for(int i = 0; i < self.receivedPacketData.count; i++)
-        {
-            printf("%d,%d\n", i, [self.receivedPacketData[i] intValue]);
-        }
-        
+//        // Print out collected packet
+//        for(int i = 0; i < self.receivedPacketData.count; i++)
+//        {
+//            printf("%d,%d\n", i, [self.receivedPacketData[i] intValue]);
+//        }
         if(self.receivedPacketData.count > 10)
         {
             NSArray *result = [Processor processPacketData:self.receivedPacketData];
-            NSLog(@"Received nibble sequence: %@", result);
+//            NSLog(@"Received nibble sequence: %@", result);
+            
+            if(result.count % 2 == 1)
+            {
+                [(NSMutableArray *)(result = [result mutableCopy]) removeObjectAtIndex:0];
+                NSLog(@"Removed first nibble");
+            }
+
+            if(result.count > 4)
+            {
+                NSArray *correctNibbles = [Processor encodeString:self.testString];
+                double error = [correctNibbles percentErrorToReceivedArray:result];
+                if(error > 0.8)
+                {
+                    printf("BAD TRANSMISSION!\n");
+                    NSLog(@"Should have been nibbles: %@", correctNibbles);
+                    NSLog(@"Received nibbles: %@", result);
+                }
+                printf("Error = %f\n", error);
+                if(error == 0)
+                {
+                    printf("Perfect transmission! :)\n");
+                }
+                err_s += error;
+                err_c++;
+                
+                printf("Error Average = %f\n", err_s / err_c);
+            }
+            
             NSString *receivedText = [Processor decodeData:result];
                        
             NSLog(@"%@", receivedText);
@@ -253,6 +310,14 @@ AudioPlayer *sharedPlayer;
 
 
 #define DEBUG_AUDIO_PLAYBACK 0
+const double gf0 = 18100 * M_PI * 2;
+const double gf1 = 18300 * M_PI * 2;
+const double gf2 = 18900 * M_PI * 2;
+const double gf3 = 19700 * M_PI * 2;
+
+u_int32_t r0 = 0;
+u_int32_t r1 = 0;
+
 double audioFunction(double t, float *frequenciesToSend)
 {
 #if DEBUG_AUDIO_PLAYBACK == 1
@@ -270,17 +335,60 @@ double audioFunction(double t, float *frequenciesToSend)
         divisor += freq > 1 ? 1 : 0;
     }
     
+    
+    /*if(r0 < UINT32_MAX / 4)
+    {
+        sum += sin(t * gf0);
+    }
+    else if(r0 >= UINT32_MAX / 4 && r0 < UINT32_MAX / 2)
+    {
+        sum += sin(t * gf1);
+    }
+    else if(r0 > UINT32_MAX / 2 && r0 < (u_int32_t)(UINT32_MAX * 0.75))
+    {
+        sum += sin(t * gf2);
+    }
+    else
+    {
+        sum += sin(t * gf3);
+    }
+    divisor++;
+    
+    
+    
+    if(r1 < UINT32_MAX / 4)
+    {
+        sum += sin(t * gf2);
+    }
+    else if(r1 >= UINT32_MAX / 4 && r1 < UINT32_MAX / 2)
+    {
+        sum += sin(t * gf0);
+    }
+    else if(r1 > UINT32_MAX / 2 && r1 < (u_int32_t)(UINT32_MAX * 0.75))
+    {
+        sum += sin(t * gf3);
+    }
+    else
+    {
+        sum += sin(t * gf1);
+    }
+    divisor++;*/
+    
+    /*sum += sin(t * gf1);
+    divisor++;*/
+    
     if(divisor == 0)
     {
         return 0;
     }
+    
     
     return sum / divisor;
 }
 
 
 float amplitudeAdjustmentsIPadTransmit[] = {4.0, 4.0, 10.0, 20.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
-float amplitudeAdjustmentsITouchTransmit[] = {1.0, 1.0, 1.0, 1.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
+float amplitudeAdjustmentsITouchTransmit[] = {1.0, 1.0, 1.0, 1.0}; // Arbitrary numbers to boost certain frequenci  es by (experimentally determined)
 float *amplitudeAdjustments; // Set at runtime for specific device;
 
 int currentFrame = 0;

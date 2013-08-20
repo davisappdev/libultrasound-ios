@@ -18,6 +18,8 @@
 
 // String encoding
 + (NSArray *) encodeString:(NSString *)string;
++ (NSArray *) encodeStringAndEncrypt:(NSString *)string withKey:(NSString *) key;
++ (NSString *) decodeDataAndDecrypt:(NSArray *)data withKey:(NSString *) key;
 + (NSString *) decodeData:(NSArray *)data;
 
 @end

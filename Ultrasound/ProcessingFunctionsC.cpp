@@ -59,3 +59,5 @@ double meanlessStandardDeviation(float *array, int start, int end)
 {
     return standardDeviation(array, start, end, meanOfArray(array, start, end));
 }
+
+#define MIN(A,B)	({ __typeof__(A) __a = (A); __typeof__(B) __b = (B); __a < __b ? __a : __b; })

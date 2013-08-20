@@ -9,7 +9,12 @@
 #import "ProcessAlgoMain.h"
 #import "ProcessingFunctions.h"
 #import "Clump.h"
+#import "AudioPlayer.h"
 
+
+#define NSLog(x)
+#define printArray(x)
+#define printArrayWithIndices(x)
 
 @implementation ProcessAlgoMain
 + (float) getDistanceSpacingFallback:(NSArray *) packetData andDistancesIntoArray:(NSArray **)distances
@@ -25,7 +30,7 @@
 
     NSArray *clumpIndices = findMidpointsOfClumps(mergedDeriv);
     NSLog(@"-------Clump indices-----");
-    printArray(clumpIndices);
+//    printArray(clumpIndices);
     *distances = findDistances(clumpIndices);
     
 
@@ -51,9 +56,10 @@
 
     printArray(distanceClumps);
     
+    double defaultClumpLength = 30.0 * (kTransmitInterval / 0.6);
     if(distanceClumps.count == 0)
     {
-        return 30.0;
+        return defaultClumpLength;
     }
     
     // Find the clump whose average is closest to the experimentally determined splitting value of 30
@@ -62,7 +68,7 @@
     for (int i = 0; i < distanceClumps.count; i++)
     {
         double average = [distanceClumps[i] average];
-        double diff = abs(average - 30.0);
+        double diff = abs(average - defaultClumpLength);
         if (diff < minDiff)
         {
             minDiff = diff;
@@ -81,7 +87,7 @@
         *distances = [*distances arrayByAddingObject:@(lastDistance)];
     }
     NSLog(@"-------Distances-----");
-    printArray(*distances);
+//    printArray(*distances);
     
     //printf("%f", distance);
     return fallbackDistance;

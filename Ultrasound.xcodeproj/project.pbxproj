@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3617DD4417BD72CE00D45CF7 /* ding.wav in Resources */ = {isa = PBXBuildFile; fileRef = 3617DD4317BD72CE00D45CF7 /* ding.wav */; };
 		361B19FA165AF09A00BC19CB /* FFTBufferManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 361B19F9165AF09A00BC19CB /* FFTBufferManager.cpp */; };
 		361B19FB165AF09A00BC19CB /* FFTBufferManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 361B19F9165AF09A00BC19CB /* FFTBufferManager.cpp */; };
 		361B1A01165AF15100BC19CB /* rad2fft.c in Sources */ = {isa = PBXBuildFile; fileRef = 361B19FE165AF15100BC19CB /* rad2fft.c */; };
@@ -17,6 +18,12 @@
 		363EA613178E196200A27151 /* ProcessingFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 36791C1E17879361002681B7 /* ProcessingFunctions.m */; };
 		363F2C7617A71B48000A249A /* UIView+Donald.m in Sources */ = {isa = PBXBuildFile; fileRef = 363F2C7517A71B47000A249A /* UIView+Donald.m */; };
 		363F2C7917A72812000A249A /* TransmitGraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 363F2C7817A72811000A249A /* TransmitGraphView.m */; };
+		364352D317BEABC800278CE8 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 364352D217BEABC800278CE8 /* MediaPlayer.framework */; };
+		365B15A717AC5603007F68C5 /* Test Strings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 365B15A617AC5603007F68C5 /* Test Strings.plist */; };
+		365B15A817AC6885007F68C5 /* ProcessingFunctionsC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 362C2AC7178E1C7900748B41 /* ProcessingFunctionsC.cpp */; };
+		365B15AB17AC6D33007F68C5 /* NSString+Levenshtein.m in Sources */ = {isa = PBXBuildFile; fileRef = 365B15AA17AC6D33007F68C5 /* NSString+Levenshtein.m */; };
+		365B15AE17AC7269007F68C5 /* NSArray+Levenshtein.m in Sources */ = {isa = PBXBuildFile; fileRef = 365B15AD17AC7269007F68C5 /* NSArray+Levenshtein.m */; };
+		366D40DB17B1CA3E00176EF2 /* NSData+AES256.m in Sources */ = {isa = PBXBuildFile; fileRef = 366D40DA17B1CA3E00176EF2 /* NSData+AES256.m */; };
 		366FDD8A178F4F440095C1A1 /* libCardIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 366FDD89178F4F440095C1A1 /* libCardIO.a */; };
 		366FDD8C178F4FA40095C1A1 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 366FDD8B178F4FA40095C1A1 /* AVFoundation.framework */; };
 		366FDD8E178F4FAF0095C1A1 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 366FDD8D178F4FAF0095C1A1 /* CoreMedia.framework */; };
@@ -47,7 +54,6 @@
 		36B750E8161693A800A6ED3B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 36B750E7161693A800A6ED3B /* Default-568h@2x.png */; };
 		36B750EB161693A800A6ED3B /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36B750E9161693A800A6ED3B /* MainStoryboard_iPhone.storyboard */; };
 		36B750EE161693A800A6ED3B /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36B750EC161693A800A6ED3B /* MainStoryboard_iPad.storyboard */; };
-		36B750F1161693A800A6ED3B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B750F0161693A800A6ED3B /* ViewController.m */; };
 		36B750F9161693A800A6ED3B /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B750F8161693A800A6ED3B /* SenTestingKit.framework */; };
 		36B750FA161693A800A6ED3B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B750D1161693A700A6ED3B /* UIKit.framework */; };
 		36B750FB161693A800A6ED3B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B750D3161693A700A6ED3B /* Foundation.framework */; };
@@ -76,6 +82,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3617DD4317BD72CE00D45CF7 /* ding.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ding.wav; sourceTree = "<group>"; };
 		361B19F8165AF09A00BC19CB /* FFTBufferManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTBufferManager.h; sourceTree = "<group>"; };
 		361B19F9165AF09A00BC19CB /* FFTBufferManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FFTBufferManager.cpp; sourceTree = "<group>"; };
 		361B19FD165AF15100BC19CB /* rad2fft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rad2fft.h; sourceTree = "<group>"; };
@@ -88,6 +95,14 @@
 		363F2C7517A71B47000A249A /* UIView+Donald.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Donald.m"; sourceTree = "<group>"; };
 		363F2C7717A72811000A249A /* TransmitGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransmitGraphView.h; sourceTree = "<group>"; };
 		363F2C7817A72811000A249A /* TransmitGraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransmitGraphView.m; sourceTree = "<group>"; };
+		364352D217BEABC800278CE8 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		365B15A617AC5603007F68C5 /* Test Strings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Test Strings.plist"; sourceTree = "<group>"; };
+		365B15A917AC6D33007F68C5 /* NSString+Levenshtein.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Levenshtein.h"; sourceTree = "<group>"; };
+		365B15AA17AC6D33007F68C5 /* NSString+Levenshtein.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Levenshtein.m"; sourceTree = "<group>"; };
+		365B15AC17AC7269007F68C5 /* NSArray+Levenshtein.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Levenshtein.h"; sourceTree = "<group>"; };
+		365B15AD17AC7269007F68C5 /* NSArray+Levenshtein.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Levenshtein.m"; sourceTree = "<group>"; };
+		366D40D917B1CA3E00176EF2 /* NSData+AES256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+AES256.h"; sourceTree = "<group>"; };
+		366D40DA17B1CA3E00176EF2 /* NSData+AES256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+AES256.m"; sourceTree = "<group>"; };
 		366FDD85178F4F440095C1A1 /* CardIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardIO.h; sourceTree = "<group>"; };
 		366FDD86178F4F440095C1A1 /* CardIOCreditCardInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardIOCreditCardInfo.h; sourceTree = "<group>"; };
 		366FDD87178F4F440095C1A1 /* CardIOPaymentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardIOPaymentViewController.h; sourceTree = "<group>"; };
@@ -129,8 +144,6 @@
 		36B750E7161693A800A6ED3B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		36B750EA161693A800A6ED3B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
 		36B750ED161693A800A6ED3B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
-		36B750EF161693A800A6ED3B /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		36B750F0161693A800A6ED3B /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		36B750F7161693A800A6ED3B /* UltrasoundTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UltrasoundTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		36B750F8161693A800A6ED3B /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		36B75100161693A800A6ED3B /* UltrasoundTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "UltrasoundTests-Info.plist"; sourceTree = "<group>"; };
@@ -163,6 +176,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				364352D317BEABC800278CE8 /* MediaPlayer.framework in Frameworks */,
 				366FDD96178F4FD50095C1A1 /* Security.framework in Frameworks */,
 				366FDD94178F4FCB0095C1A1 /* OpenGLES.framework in Frameworks */,
 				366FDD92178F4FC20095C1A1 /* CoreVideo.framework in Frameworks */,
@@ -263,6 +277,7 @@
 		36B750D0161693A700A6ED3B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				364352D217BEABC800278CE8 /* MediaPlayer.framework */,
 				366FDD84178F4F440095C1A1 /* CardIO */,
 				3692BEB7165741F3002A8605 /* iPublicUtility */,
 				36791C19178792A3002681B7 /* ProcessAlgo */,
@@ -295,10 +310,9 @@
 				36791C1B178792BC002681B7 /* ProcessAlgoMain.m */,
 				36B750E9161693A800A6ED3B /* MainStoryboard_iPhone.storyboard */,
 				36B750EC161693A800A6ED3B /* MainStoryboard_iPad.storyboard */,
-				36B750EF161693A800A6ED3B /* ViewController.h */,
-				36B750F0161693A800A6ED3B /* ViewController.m */,
 				36C3017B1634966F00D44AE8 /* AudioPlayer.h */,
 				36C3017C1634966F00D44AE8 /* AudioPlayer.m */,
+				3617DD4317BD72CE00D45CF7 /* ding.wav */,
 				36B7510F161693E900A6ED3B /* AudioManager.h */,
 				36B75110161693E900A6ED3B /* AudioManager.mm */,
 				3692BE9F165740B2002A8605 /* audio_helper.h */,
@@ -314,6 +328,7 @@
 				36B750D8161693A700A6ED3B /* Supporting Files */,
 				363F2C7417A71B47000A249A /* UIView+Donald.h */,
 				363F2C7517A71B47000A249A /* UIView+Donald.m */,
+				365B15A617AC5603007F68C5 /* Test Strings.plist */,
 			);
 			path = Ultrasound;
 			sourceTree = "<group>";
@@ -330,6 +345,12 @@
 				36B750E3161693A800A6ED3B /* Default.png */,
 				36B750E5161693A800A6ED3B /* Default@2x.png */,
 				36B750E7161693A800A6ED3B /* Default-568h@2x.png */,
+				365B15A917AC6D33007F68C5 /* NSString+Levenshtein.h */,
+				365B15AA17AC6D33007F68C5 /* NSString+Levenshtein.m */,
+				365B15AC17AC7269007F68C5 /* NSArray+Levenshtein.h */,
+				365B15AD17AC7269007F68C5 /* NSArray+Levenshtein.m */,
+				366D40D917B1CA3E00176EF2 /* NSData+AES256.h */,
+				366D40DA17B1CA3E00176EF2 /* NSData+AES256.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -444,7 +465,9 @@
 				36B750E4161693A800A6ED3B /* Default.png in Resources */,
 				36B750E6161693A800A6ED3B /* Default@2x.png in Resources */,
 				36B750E8161693A800A6ED3B /* Default-568h@2x.png in Resources */,
+				365B15A717AC5603007F68C5 /* Test Strings.plist in Resources */,
 				36B750EB161693A800A6ED3B /* MainStoryboard_iPhone.storyboard in Resources */,
+				3617DD4417BD72CE00D45CF7 /* ding.wav in Resources */,
 				36B750EE161693A800A6ED3B /* MainStoryboard_iPad.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -481,12 +504,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				36F70B9517A33B090028228B /* TransmitViewController.m in Sources */,
+				366D40DB17B1CA3E00176EF2 /* NSData+AES256.m in Sources */,
 				362C2AC8178E1C7900748B41 /* ProcessingFunctionsC.cpp in Sources */,
 				36F70BA017A347FA0028228B /* GraphViewUtils.m in Sources */,
 				36B750DE161693A700A6ED3B /* main.m in Sources */,
 				36F70BA317A34E0F0028228B /* FFTGraphView.m in Sources */,
 				36B750E2161693A800A6ED3B /* AppDelegate.m in Sources */,
-				36B750F1161693A800A6ED3B /* ViewController.m in Sources */,
+				365B15AE17AC7269007F68C5 /* NSArray+Levenshtein.m in Sources */,
+				365B15AB17AC6D33007F68C5 /* NSString+Levenshtein.m in Sources */,
 				36B75111161693E900A6ED3B /* AudioManager.mm in Sources */,
 				36C3017D1634966F00D44AE8 /* AudioPlayer.m in Sources */,
 				3692BEA81657414F002A8605 /* audio_helper.cpp in Sources */,
@@ -511,6 +536,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				365B15A817AC6885007F68C5 /* ProcessingFunctionsC.cpp in Sources */,
 				36B75106161693A800A6ED3B /* UltrasoundTests.m in Sources */,
 				3692BEA91657414F002A8605 /* audio_helper.cpp in Sources */,
 				3692BEB2165741E9002A8605 /* CADebugMacros.cpp in Sources */,

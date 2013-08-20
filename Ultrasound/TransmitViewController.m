@@ -9,9 +9,10 @@
 #import "TransmitViewController.h"
 #import "Processor.h"
 #import "UIView+Donald.h"
-
-#define kTestString @"test string"
-#define kTestCount 10
+#import "ProcessAlgoMain.h"
+#import "NSArray+Levenshtein.h"
+#import <AudioToolbox/AudioToolbox.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface TransmitViewController ()
 @property (nonatomic, strong) AudioPlayer *player;
@@ -20,12 +21,16 @@
 @property (nonatomic) float *currentlyTransmittingFrequencies;
 @property (weak, nonatomic) IBOutlet UITextField *dataToTransmitField;
 @property (nonatomic, strong) NSTimer *phaseShiftTimer;
-
-@property (nonatomic) int testTransmissionCount;
+@property (nonatomic) NSString *testString;
+@property (nonatomic) int testTransmissionIndex;
+@property (nonatomic) int repeatCount;
 @end
 
+
+#define kCarrierWaveAttenuation 0.2
 @implementation TransmitViewController
 
+BOOL programChangesVolume = NO;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -34,9 +39,36 @@
     self.player.isReceiving = NO;
     self.player.transmitDelegate = self;
     
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"Test Strings" ofType:@"plist"];
+    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path];
+    self.testString = dict[@"transmitString"];
+    self.repeatCount = [dict[@"repeatCount"] intValue];
     
-    NSLog(@"Test nibbles: %@", [Processor encodeString:kTestString]);
-    self.dataToTransmitField.text = kTestString;
+    NSLog(@"Test repeat count: %d", self.repeatCount);
+    NSLog(@"Test nibbles: %@", [Processor encodeString:self.testString]);
+    self.dataToTransmitField.text = self.testString;
+    
+    MPVolumeView *myVolumeView = [[MPVolumeView alloc] initWithFrame:CGRectMake(2000, 200, 400, 44)];
+    //[self.view addSubview:myVolumeView];
+    
+    programChangesVolume = YES;
+    [MPMusicPlayerController applicationMusicPlayer].volume = kCarrierWaveAttenuation;
+    
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(volumeChanged:) name:@"AVSystemController_SystemVolumeDidChangeNotification" object:nil];
+}
+
+
+- (void)volumeChanged:(NSNotification *)notification
+{
+    if(programChangesVolume)
+    {
+        programChangesVolume = NO;
+    }
+    else
+    {
+        programChangesVolume = YES;
+        [MPMusicPlayerController applicationMusicPlayer].volume = kCarrierWaveAttenuation;
+    }
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -61,32 +93,37 @@
     
     [self.phaseShiftTimer invalidate];
     
-    double delayInSeconds = 2.0;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        if(self.testTransmissionCount < kTestCount - 1)
-        {
-            self.testTransmissionCount++;
-            [self textFieldDidEndEditing:self.dataToTransmitField];
-        }
-        else
-        {
-            self.testTransmissionCount = 0;
-        }
-    });
+
+    if(self.testTransmissionIndex < self.repeatCount - 1)
+    {
+        self.testTransmissionIndex++;
+        [self.player transmitString:self.testString];
+        NSLog(@"Transmit count: %d", self.testTransmissionIndex);
+    }
+    else
+    {
+        self.testTransmissionIndex = 0;
+        NSLog(@"Stopping transmission@");
+        [self.player stop];
+        
+        NSString *soundPath =  [[NSBundle mainBundle] pathForResource:@"ding" ofType:@"wav"];
+        SystemSoundID soundID;
+        AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath: soundPath], &soundID);
+        AudioServicesPlaySystemSound (soundID);
+    }
 }
 - (void) audioStartedTransmittingSequence: (float *) freqs withSize: (int) size
 {
     self.tabBarController.tabBar.userInteractionEnabled = NO;
     self.tabBarController.tabBar.tintColor = [UIColor grayColor];
     
-    self.phaseShiftTimer = [NSTimer timerWithTimeInterval:0.0333 target:self selector:@selector(phaseShift:) userInfo:nil repeats:YES];
+    /*self.phaseShiftTimer = [NSTimer timerWithTimeInterval:0.0333 target:self selector:@selector(phaseShift:) userInfo:nil repeats:YES];
     [[NSRunLoop mainRunLoop] addTimer:self.phaseShiftTimer forMode:NSRunLoopCommonModes];
-    [self.phaseShiftTimer fire];
+    [self.phaseShiftTimer fire];*/
 }
 - (void) audioStartedTransmittingFrequencies:(float *)freqs withSize:(int)size
 {
-    if(self.currentlyTransmittingFrequencies != NULL)
+    /*if(self.currentlyTransmittingFrequencies != NULL)
     {
         if(self.oldTransmittingFrequencies != NULL)
         {
@@ -102,7 +139,7 @@
     memcpy(self.currentlyTransmittingFrequencies, freqs, sizeof(float) * size);
     [self.graphView generateBitmapAndRedraw];
     
-    justUpdated = YES;
+    justUpdated = YES;*/
 }
 
 #pragma mark - Text Field Methods
@@ -152,14 +189,14 @@
 - (void) setGraphView:(GraphView *)graphView
 {
     _graphView = graphView;
-    _graphView.dataSource = self;
+    //_graphView.dataSource = self;
     
     [_graphView setupInitialTransforms];
     _graphView.minRedrawInterval = 0.03;
     [_graphView applyStandardSinkStyleNoRounding];
 }
 
-float t = 0;
+/*float t = 0;
 - (double) valueForXCoord:(double)x withIndex:(int)graphIndex graphView:(GraphView *)view
 {
     if (!self.oldTransmittingFrequencies || !self.currentlyTransmittingFrequencies)
@@ -181,9 +218,9 @@ float t = 0;
     }
     
     return sum;
-}
+}*/
 
-float lastUpdateT = 0;
+/*float lastUpdateT = 0;
 BOOL justUpdated = NO;
 - (void) phaseShift:(NSTimer *)timer
 {
@@ -196,6 +233,6 @@ BOOL justUpdated = NO;
     }
     
     [self.graphView generateBitmapAndRedraw];
-}
+}*/
 
 @end
