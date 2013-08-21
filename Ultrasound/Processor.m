@@ -222,12 +222,14 @@
         [bytes addObject:@(c)];
     }
     
-    return [self splitByteArrayIntoNibbleArray:bytes];
+    //return [self splitByteArrayIntoNibbleArray:bytes];
+    return bytes;
 }
 
 + (NSString *) decodeData:(NSArray *)data
 {
-    NSArray *bytes = [self combineNibbleArrayToByteArray:data];
+//    NSArray *bytes = [self combineNibbleArrayToByteArray:data];
+    NSArray *bytes = data;
     if(!bytes) return nil;
     
     NSMutableString *string = [NSMutableString string];

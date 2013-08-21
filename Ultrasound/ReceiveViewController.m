@@ -55,7 +55,7 @@
     
 }
 
-- (void) audioReceivedText:(NSString *)text
+- (void) audioReceivedText:(NSString *) text rollingAverage:(float)avg
 {
     if (text == nil)
     {
@@ -63,7 +63,7 @@
     }
     else
     {
-        self.receivedStringLabel.text = text;
+        self.receivedStringLabel.text = [NSString stringWithFormat:@"%@, avg = %f", text, avg];
         // Nibbles we received
 //        NSLog(@"Received: %@\n\nShould have received: %@", nibbles, correctNibbles);
         

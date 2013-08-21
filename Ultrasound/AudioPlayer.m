@@ -216,7 +216,7 @@ int err_c = 0;
             NSArray *result = [Processor processPacketData:self.receivedPacketData];
 //            NSLog(@"Received nibble sequence: %@", result);
             
-            if(result.count % 2 == 1)
+            if(result.count % 2 == 1 && [result[0] intValue] == 0)
             {
                 [(NSMutableArray *)(result = [result mutableCopy]) removeObjectAtIndex:0];
                 NSLog(@"Removed first nibble");
@@ -246,7 +246,7 @@ int err_c = 0;
             NSString *receivedText = [Processor decodeData:result];
                        
             NSLog(@"%@", receivedText);
-            [self.receiveDelegate audioReceivedText:receivedText];
+            [self.receiveDelegate audioReceivedText:receivedText rollingAverage:err_s / err_c];
         }
         
         [self.receivedPacketData removeAllObjects];
@@ -310,10 +310,10 @@ int err_c = 0;
 
 
 #define DEBUG_AUDIO_PLAYBACK 0
-const double gf0 = 18100 * M_PI * 2;
-const double gf1 = 18300 * M_PI * 2;
-const double gf2 = 18900 * M_PI * 2;
-const double gf3 = 19700 * M_PI * 2;
+//const double gf0 = 18100 * M_PI * 2;
+//const double gf1 = 18300 * M_PI * 2;
+//const double gf2 = 18900 * M_PI * 2;
+//const double gf3 = 19700 * M_PI * 2;
 
 u_int32_t r0 = 0;
 u_int32_t r1 = 0;
@@ -387,8 +387,8 @@ double audioFunction(double t, float *frequenciesToSend)
 }
 
 
-float amplitudeAdjustmentsIPadTransmit[] = {4.0, 4.0, 10.0, 20.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
-float amplitudeAdjustmentsITouchTransmit[] = {1.0, 1.0, 1.0, 1.0}; // Arbitrary numbers to boost certain frequenci  es by (experimentally determined)
+float amplitudeAdjustmentsIPadTransmit[] = {4.0, 4.0, 10.0, 20.0, 1.0, 1.0, 1.0, 1.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
+float amplitudeAdjustmentsITouchTransmit[] = {4.0, 5.0, 4.0, 1.0, 1.0, 1.0, 1.0, 1.0}; // Arbitrary numbers to boost certain frequenci  es by (experimentally determined)
 float *amplitudeAdjustments; // Set at runtime for specific device;
 
 int currentFrame = 0;
@@ -434,6 +434,8 @@ double rampDown = 0.8;
                 ramp = 1.0 - (progress - rampDown) / (1.0 - rampDown);
             }
             ramp = MIN(ramp, 1.0);
+            
+            
             ramp = MAX(ramp, 0.0);
             
             data[frame] = audioFunction(time, frequenciesToSend) * ramp;
@@ -463,12 +465,12 @@ double rampDown = 0.8;
     BOOL p1 = (byte & 0x02) != 0 ? YES : NO;
     BOOL p2 = (byte & 0x04) != 0 ? YES : NO;
     BOOL p3 = (byte & 0x08) != 0 ? YES : NO;
-    /*BOOL p4 = (byte & 0x10) != 0 ? YES : NO;
+    BOOL p4 = (byte & 0x10) != 0 ? YES : NO;
     BOOL p5 = (byte & 0x20) != 0 ? YES : NO;
     BOOL p6 = (byte & 0x40) != 0 ? YES : NO;
-    BOOL p7 = (byte & 0x80) != 0 ? YES : NO;*/
+    BOOL p7 = (byte & 0x80) != 0 ? YES : NO;
     
-    return @[@(p0), @(p1), @(p2), @(p3)];
+    return @[@(p0), @(p1), @(p2), @(p3), @(p4), @(p5), @(p6), @(p7)];
 
 }
 

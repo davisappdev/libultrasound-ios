@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#define kTransmitFrequencies @[@17980, @18174, @18605, @19509]
-#define kNumberOfTransmitFrequencies 4
+#define kTransmitFrequencies @[@16990, @17420, @17851, @18282, @18712, @19143, @19574, @20004]
+#define kNumberOfTransmitFrequencies 8
 #define kPacketDelimiterFrequency 19003
 #define kRatio (21.533203125)
 

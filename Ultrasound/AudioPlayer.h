@@ -9,7 +9,7 @@
 @protocol AudioPlayerReceiveDelegate <NSObject>
 
 - (void) audioReceivedDataUpdate:(int)data;
-- (void) audioReceivedText:(NSString *) text;
+- (void) audioReceivedText:(NSString *) text rollingAverage:(float)avg;
 - (void) audioReceivedFFTData:(float *)data arraySize:(int)size cutoff:(float)cutoff;
 
 @end

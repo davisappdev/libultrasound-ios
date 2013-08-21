@@ -163,7 +163,7 @@ float delimCutoff;
         self.delegate = delegate;
         
         globalSelf = self;
-        delimCutoff = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 25 : 30;
+        delimCutoff = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 25 : 80;
         
         OSStatus result = AudioSessionInitialize(NULL, NULL, ToneInterruptionListener, (__bridge void *)(self));
         if (result == kAudioSessionNoError)
@@ -357,7 +357,7 @@ void printFFTStuff(int32_t *fftData)
         }
     }
     
-//    printf("%f\n", delimValue);
+    //printf("%f\n", delimValue);
     if(delimValue > delimCutoff && fabs(delimValue - 120) > DBL_EPSILON)
     {
 //        printf("DELIMITER DETECTED\n\n");
