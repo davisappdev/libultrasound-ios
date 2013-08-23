@@ -231,6 +231,7 @@ int err_c = 0;
                     printf("BAD TRANSMISSION!\n");
                     NSLog(@"Should have been nibbles: %@", correctNibbles);
                     NSLog(@"Received nibbles: %@", result);
+                    NSArray *result = [Processor processPacketData:self.receivedPacketData];
                 }
                 printf("Error = %f\n", error);
                 if(error == 0)
@@ -388,7 +389,8 @@ double audioFunction(double t, float *frequenciesToSend)
 
 
 float amplitudeAdjustmentsIPadTransmit[] = {4.0, 4.0, 10.0, 20.0, 1.0, 1.0, 1.0, 1.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
-float amplitudeAdjustmentsITouchTransmit[] = {4.0, 5.0, 4.0, 1.0, 1.0, 1.0, 1.0, 1.0}; // Arbitrary numbers to boost certain frequenci  es by (experimentally determined)
+float amplitudeAdjustmentsITouchTransmit[] = {4.0, 5.0, 4.0, 1.0, 1.0, 1.0, 1.0, 1.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
+//float amplitudeAdjustmentsITouchTransmit[] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}; // Arbitrary numbers to boost certain frequencies by (experimentally determined)
 float *amplitudeAdjustments; // Set at runtime for specific device;
 
 int currentFrame = 0;

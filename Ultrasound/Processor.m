@@ -43,6 +43,7 @@
     double lastIncrement = 0;
     for (int i = 0; i < packetData.count; i += lastIncrement)
     {
+        BOOL isFakeData = increment < fallbackPacketLength * 0.5;
         if (increment > fallbackPacketLength * 1.5)
         {
             syncCounter = round(increment / fallbackPacketLength);
@@ -52,15 +53,18 @@
 //            needToSync = YES;
         }
         
-        NSMutableArray *subData = [NSMutableArray array];
-        //printf("Start sub data: %i\nEnd sub data:%i\n", i, (int)(i + increment - 1));
-        for (int j = i; j < i + increment - 1; j++)
+        if(!isFakeData)
         {
-            [subData addObject:packetData[j]];
-        }
+            NSMutableArray *subData = [NSMutableArray array];
+            //printf("Start sub data: %i\nEnd sub data:%i\n", i, (int)(i + increment - 1));
+            for (int j = i; j < i + increment - 1; j++)
+            {
+                [subData addObject:packetData[j]];
+            }
 
-        int mode = [self findModeForArray:subData];
-        [result addObject:@(mode)];
+            int mode = [self findModeForArray:subData];
+            [result addObject:@(mode)];
+        }
         
         if (syncCounter > 0)
         {

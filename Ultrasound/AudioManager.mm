@@ -97,7 +97,7 @@ int SetupRemoteIO (AudioUnit& inRemoteIOUnit, AURenderCallbackStruct inRenderPro
     //set our required format - Canonical AU format: LPCM non-interleaved 8.24 fixed point
     outFormat.SetAUCanonical(2, false);
     outFormat.mSampleRate = kSampleRate;
-    //AudioUnitSetProperty(inRemoteIOUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &outFormat, sizeof(outFormat));
+//    AudioUnitSetProperty(inRemoteIOUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &outFormat, sizeof(outFormat));
     AudioUnitSetProperty(inRemoteIOUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 1, &outFormat, sizeof(outFormat));
     
     
@@ -278,10 +278,10 @@ void printFFTStuff(int32_t *fftData)
     int maxIndex = round([[requestedFrequencies lastObject] intValue] / kRatio) + 20;
     int delimIndex = round(kPacketDelimiterFrequency / kRatio);
     
-    for(int i = minIndex; i <= maxIndex; i++)
+   /* for(int i = minIndex; i <= maxIndex; i++)
     {
-//       printf("%d,%f\n", i - minIndex, storedFFTData[i]);
-    }
+       printf("%d,%f\n", i - minIndex, storedFFTData[i]);
+    }*/
     
     double delimValue = 0;
     int delimUp = 3;

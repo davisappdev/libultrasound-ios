@@ -27,7 +27,7 @@
 @end
 
 
-#define kCarrierWaveAttenuation 0.2
+#define kCarrierWaveAttenuation 0.95 // 0.2
 @implementation TransmitViewController
 
 BOOL programChangesVolume = NO;

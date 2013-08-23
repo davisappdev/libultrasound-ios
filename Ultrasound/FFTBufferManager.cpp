@@ -27,7 +27,16 @@ void FFTBufferManager::GrabAudioData(AudioBufferList *inBL)
 	
 	UInt32 bytesToCopy = min(inBL->mBuffers[0].mDataByteSize, mAudioBufferSize - mAudioBufferCurrentIndex);
 	memcpy(mAudioBuffer+mAudioBufferCurrentIndex, inBL->mBuffers[0].mData, bytesToCopy);
-	
+    
+    
+    /*printf("Microphone Values:\n");
+    for(int i = 0; i < inBL->mBuffers[0].mDataByteSize * sizeof(int32_t); i += sizeof(int32_t))
+    {
+        printf("%f\n", ((float *)inBL->mBuffers[0].mData)[i]);
+    }
+	printf("\n\n");*/
+    
+    
 	mAudioBufferCurrentIndex += bytesToCopy / sizeof(int32_t);
 	if (mAudioBufferCurrentIndex >= mAudioBufferSize / sizeof(int32_t))
 	{

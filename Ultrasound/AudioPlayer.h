@@ -4,7 +4,7 @@
 
 
 #define kFFTInterval 0.02
-#define kTransmitInterval 0.6
+#define kTransmitInterval 0.3 // 0.3
 
 @protocol AudioPlayerReceiveDelegate <NSObject>
 
