@@ -238,7 +238,7 @@ void printFFTStuff(int32_t *fftData)
 
 
 
-
+#define kSTDCutoffCoefficient 3.0
 - (NSArray *) fourier:(NSArray *) requestedFrequencies
 {
     fft->ComputeFFT(fftData);
@@ -303,7 +303,7 @@ void printFFTStuff(int32_t *fftData)
     maxIndex = MIN(maxIndex, maxY-2);
     double standardDeviation = meanlessStandardDeviation(storedFFTData, minIndex, maxIndex);
     double maxValue = maxValueForArray(storedFFTData, minIndex, maxIndex);
-    double cutoffValue = maxValue - (standardDeviation * 3);
+    double cutoffValue = maxValue - (standardDeviation * kSTDCutoffCoefficient);
     cutoffValue = MIN(cutoffValue, 40);
     
     [self.delegate fftData:storedFFTData arraySize:maxY-1 cutoff:cutoffValue];

@@ -15,7 +15,7 @@
     Transforms trans = [super initialTransforms];
     
     trans.translation.x = 20000;
-    trans.translation.y = 0;
+    trans.translation.y = 100;
     
     trans.scale.x = self.frame.size.width / 6000.0;
     trans.scale.y = self.frame.size.height / 200.0;

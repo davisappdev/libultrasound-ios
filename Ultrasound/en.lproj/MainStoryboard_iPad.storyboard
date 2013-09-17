@@ -139,7 +139,7 @@
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cbl-zm-PI7" customClass="FFTGraphView">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cbl-zm-PI7" customClass="FFTGraphView">
                                 <rect key="frame" x="20" y="131" width="728" height="824"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -173,6 +173,7 @@
                     <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <tabBarItem key="tabBarItem" title="Receive" id="cnF-ha-k4V"/>
                     <connections>
+                        <outlet property="graphView" destination="cbl-zm-PI7" id="a9E-f0-6vi"/>
                         <outlet property="receivedStringLabel" destination="0fW-ey-gLv" id="6CQ-5R-cwz"/>
                     </connections>
                 </viewController>

@@ -72,7 +72,7 @@
 
 - (void) audioReceivedFFTData:(float *)data arraySize:(int)size cutoff:(float)cutoff
 {
-    /*if(self.copiedFFTData != NULL)
+    if(self.copiedFFTData != NULL)
     {
         free(self.copiedFFTData);
     }
@@ -82,7 +82,7 @@
     
     self.copiedCutoff = cutoff;
     
-    [self.graphView generateBitmapAndRedraw];*/
+    [self.graphView generateBitmapAndRedraw];
 }
 
 
@@ -92,7 +92,7 @@
 - (void) setGraphView:(GraphView *)graphView
 {
     _graphView = graphView;
-    //_graphView.dataSource = self;
+    _graphView.dataSource = self;
     
     [_graphView setupInitialTransforms];
     
