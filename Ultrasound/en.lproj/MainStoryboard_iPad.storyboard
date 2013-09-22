@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4488.2" systemVersion="12E55" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="7NP-xo-NSk">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="7NP-xo-NSk">
     <dependencies>
         <deployment defaultVersion="1552" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3715.3"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
     </dependencies>
     <scenes>
         <!--Transmit View Controller - Transmit-->
@@ -17,7 +17,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Transmit Data" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iPz-ff-nql">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Scan credit card to purchase" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gkM-ju-k4m">
+                                <rect key="frame" x="20" y="65" width="728" height="121"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="40"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Transmit Data" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iPz-ff-nql">
                                 <rect key="frame" x="20" y="30" width="728" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
@@ -27,7 +34,7 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Data to transmit" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="q3B-V6-Csa">
+                            <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Data to transmit" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="q3B-V6-Csa">
                                 <rect key="frame" x="20" y="71" width="633" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
@@ -39,7 +46,7 @@
                                     <outlet property="delegate" destination="iTx-dh-biZ" id="wW0-cZ-gKw"/>
                                 </connections>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XDq-Nw-R4v">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XDq-Nw-R4v">
                                 <rect key="frame" x="661" y="52" width="87" height="68"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
@@ -57,32 +64,42 @@
                                     <action selector="cameraPressed:" destination="iTx-dh-biZ" eventType="touchUpInside" id="J96-oj-bwx"/>
                                 </connections>
                             </button>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YL0-Q8-ZFl" customClass="TransmitGraphView">
-                                <rect key="frame" x="20" y="114" width="728" height="841"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Transmission: 0%" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bPG-0m-u16">
+                                <rect key="frame" x="20" y="889" width="728" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="24"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5a8-Ip-fm2" customClass="iOS7ProgressView">
+                                <rect key="frame" x="82" y="868" width="600" height="10"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="10" id="pGH-2r-Sd5"/>
+                                    <constraint firstAttribute="width" constant="600" id="sek-VC-VmQ"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Y8E-rW-2yL" firstAttribute="top" secondItem="YL0-Q8-ZFl" secondAttribute="bottom" constant="20" id="8pO-kc-ScC"/>
                             <constraint firstItem="XDq-Nw-R4v" firstAttribute="top" secondItem="iPz-ff-nql" secondAttribute="bottom" constant="1" id="CRe-WE-KcZ"/>
                             <constraint firstItem="iPz-ff-nql" firstAttribute="top" secondItem="7mF-qz-DTT" secondAttribute="top" constant="30" id="DtC-0o-Q7k"/>
+                            <constraint firstAttribute="centerX" secondItem="5a8-Ip-fm2" secondAttribute="centerX" constant="2.5" id="ETl-kD-qEi"/>
                             <constraint firstItem="XDq-Nw-R4v" firstAttribute="leading" secondItem="q3B-V6-Csa" secondAttribute="trailing" constant="8" symbolic="YES" id="Eop-l1-f8Y"/>
                             <constraint firstItem="q3B-V6-Csa" firstAttribute="centerY" secondItem="XDq-Nw-R4v" secondAttribute="centerY" id="GU1-Fp-bVR"/>
                             <constraint firstItem="q3B-V6-Csa" firstAttribute="leading" secondItem="iPz-ff-nql" secondAttribute="leading" id="OB8-fJ-8d0"/>
                             <constraint firstItem="XDq-Nw-R4v" firstAttribute="trailing" secondItem="iPz-ff-nql" secondAttribute="trailing" id="QDX-zc-xzy"/>
                             <constraint firstItem="q3B-V6-Csa" firstAttribute="top" secondItem="iPz-ff-nql" secondAttribute="bottom" constant="20" id="T3D-bD-E0y"/>
-                            <constraint firstItem="YL0-Q8-ZFl" firstAttribute="leading" secondItem="q3B-V6-Csa" secondAttribute="leading" id="YRd-6E-sfu"/>
-                            <constraint firstItem="YL0-Q8-ZFl" firstAttribute="top" secondItem="q3B-V6-Csa" secondAttribute="bottom" constant="13" id="fK7-Iy-Up6"/>
+                            <constraint firstItem="Y8E-rW-2yL" firstAttribute="top" secondItem="5a8-Ip-fm2" secondAttribute="bottom" constant="97" id="VZI-IY-Dns"/>
                             <constraint firstAttribute="trailing" secondItem="iPz-ff-nql" secondAttribute="trailing" constant="20" symbolic="YES" id="ohU-q7-0vK"/>
                             <constraint firstItem="iPz-ff-nql" firstAttribute="leading" secondItem="7mF-qz-DTT" secondAttribute="leading" constant="20" symbolic="YES" id="qdX-2j-yFC"/>
-                            <constraint firstItem="YL0-Q8-ZFl" firstAttribute="trailing" secondItem="XDq-Nw-R4v" secondAttribute="trailing" id="r9x-RB-dfH"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Transmit" id="hnS-Tb-y14"/>
                     <connections>
                         <outlet property="dataToTransmitField" destination="q3B-V6-Csa" id="rXI-te-fVH"/>
+                        <outlet property="progressBar" destination="5a8-Ip-fm2" id="Oo5-5d-SeY"/>
+                        <outlet property="transmissionLabel" destination="bPG-0m-u16" id="YBo-xD-ZvA"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZrW-Pf-KHF" userLabel="First Responder" sceneMemberID="firstResponder"/>

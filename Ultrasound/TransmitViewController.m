@@ -11,6 +11,7 @@
 #import "UIView+Donald.h"
 #import "ProcessAlgoMain.h"
 #import "NSArray+Levenshtein.h"
+#import "iOS7ProgressView.h"
 #import <AudioToolbox/AudioToolbox.h>
 #import <MediaPlayer/MediaPlayer.h>
 
@@ -24,6 +25,10 @@
 @property (nonatomic) NSString *testString;
 @property (nonatomic) int testTransmissionIndex;
 @property (nonatomic) int repeatCount;
+
+@property (nonatomic, strong) UIPopoverController *cameraPopover;
+@property (nonatomic, weak) IBOutlet UILabel *transmissionLabel;
+@property (weak, nonatomic) IBOutlet iOS7ProgressView *progressBar;
 @end
 
 
@@ -55,7 +60,11 @@ BOOL programChangesVolume = NO;
     [MPMusicPlayerController applicationMusicPlayer].volume = kCarrierWaveAttenuation;
     
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(volumeChanged:) name:@"AVSystemController_SystemVolumeDidChangeNotification" object:nil];
+    self.progressBar.progressColor = [UIColor colorWithRed:0/255.0 green:122/255.0 blue:255/255.0 alpha:1.0];
+    self.progressBar.trackColor = [UIColor colorWithRed:184/255.0 green:184/255.0 blue:184/255.0 alpha:1.0];
+    [self.progressBar setProgress:0.0 animated:YES];
 }
+
 
 
 - (void)volumeChanged:(NSNotification *)notification
@@ -76,6 +85,8 @@ BOOL programChangesVolume = NO;
     [super viewDidAppear:animated];
     
     self.player.isReceiving = NO;
+    [self cameraPressed:nil];
+
 }
 
 - (void) viewWillDisappear:(BOOL)animated
@@ -166,7 +177,18 @@ BOOL programChangesVolume = NO;
 {
     CardIOPaymentViewController *scanViewController = [[CardIOPaymentViewController alloc] initWithPaymentDelegate:self];
     scanViewController.appToken = @"0a3e3723bfde4ff683d03cd1520aabcc"; // get your app token from the card.io website
-    [self presentViewController:scanViewController animated:YES completion:nil];
+    //[self presentViewController:scanViewController animated:YES completion:nil];
+    
+    self.cameraPopover = [[UIPopoverController alloc] initWithContentViewController:scanViewController];
+    self.cameraPopover.popoverContentSize = CGSizeMake(600, 600);
+
+    CGRect popRect = self.progressBar.bounds;
+    popRect.origin.y -= 50;
+    [self.cameraPopover presentPopoverFromRect:popRect inView:self.progressBar permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    
+    /*[self addChildViewController:scanViewController];
+    [self.view addSubview:scanViewController.view];
+    scanViewController.view.frame = CGRectMake(20, 200, 400, 400);*/
 }
 
 - (void) userDidCancelPaymentViewController:(CardIOPaymentViewController *)scanViewController

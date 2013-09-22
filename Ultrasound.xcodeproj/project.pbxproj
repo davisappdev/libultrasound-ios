@@ -18,6 +18,7 @@
 		363EA613178E196200A27151 /* ProcessingFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 36791C1E17879361002681B7 /* ProcessingFunctions.m */; };
 		363F2C7617A71B48000A249A /* UIView+Donald.m in Sources */ = {isa = PBXBuildFile; fileRef = 363F2C7517A71B47000A249A /* UIView+Donald.m */; };
 		363F2C7917A72812000A249A /* TransmitGraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 363F2C7817A72811000A249A /* TransmitGraphView.m */; };
+		3642F30317EFB00E0086281C /* iOS7ProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3642F30217EFB00E0086281C /* iOS7ProgressView.m */; };
 		364352D317BEABC800278CE8 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 364352D217BEABC800278CE8 /* MediaPlayer.framework */; };
 		365B15A717AC5603007F68C5 /* Test Strings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 365B15A617AC5603007F68C5 /* Test Strings.plist */; };
 		365B15A817AC6885007F68C5 /* ProcessingFunctionsC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 362C2AC7178E1C7900748B41 /* ProcessingFunctionsC.cpp */; };
@@ -95,6 +96,8 @@
 		363F2C7517A71B47000A249A /* UIView+Donald.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Donald.m"; sourceTree = "<group>"; };
 		363F2C7717A72811000A249A /* TransmitGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransmitGraphView.h; sourceTree = "<group>"; };
 		363F2C7817A72811000A249A /* TransmitGraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransmitGraphView.m; sourceTree = "<group>"; };
+		3642F30117EFB00E0086281C /* iOS7ProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOS7ProgressView.h; sourceTree = "<group>"; };
+		3642F30217EFB00E0086281C /* iOS7ProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iOS7ProgressView.m; sourceTree = "<group>"; };
 		364352D217BEABC800278CE8 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		365B15A617AC5603007F68C5 /* Test Strings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Test Strings.plist"; sourceTree = "<group>"; };
 		365B15A917AC6D33007F68C5 /* NSString+Levenshtein.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Levenshtein.h"; sourceTree = "<group>"; };
@@ -329,6 +332,8 @@
 				363F2C7417A71B47000A249A /* UIView+Donald.h */,
 				363F2C7517A71B47000A249A /* UIView+Donald.m */,
 				365B15A617AC5603007F68C5 /* Test Strings.plist */,
+				3642F30117EFB00E0086281C /* iOS7ProgressView.h */,
+				3642F30217EFB00E0086281C /* iOS7ProgressView.m */,
 			);
 			path = Ultrasound;
 			sourceTree = "<group>";
@@ -511,6 +516,7 @@
 				36F70BA317A34E0F0028228B /* FFTGraphView.m in Sources */,
 				36B750E2161693A800A6ED3B /* AppDelegate.m in Sources */,
 				365B15AE17AC7269007F68C5 /* NSArray+Levenshtein.m in Sources */,
+				3642F30317EFB00E0086281C /* iOS7ProgressView.m in Sources */,
 				365B15AB17AC6D33007F68C5 /* NSString+Levenshtein.m in Sources */,
 				36B75111161693E900A6ED3B /* AudioManager.mm in Sources */,
 				36C3017D1634966F00D44AE8 /* AudioPlayer.m in Sources */,
